@@ -212,6 +212,10 @@
             const [isScouting, setIsScouting] = useState(false);
             const [scoutResults, setScoutResults] = useState([]);
 
+            // RIPRISTINATE variabili di stato per il Modale Aggiungi Prospect
+            const [showAddModal, setShowAddModal] = useState(false);
+            const [newClientData, setNewClientData] = useState({ name: '', city: '', phone: '', agente: "L'Officina" });
+
             const appId = 'app-ordini-2ce45'; 
 
             // EFFETTO 1: Aspetta che Firebase sia scaricato da internet
