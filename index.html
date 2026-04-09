@@ -255,8 +255,8 @@
                         if (s.docs.length > 0) {
                             const data = s.docs.map(d => ({ id: d.id, ...d.data() }));
                             setCustomers(prev => {
-                                const map = new Map(prev.map(item => [item.name?.trim().toLowerCase(), item]));
-                                data.forEach(item => map.set(item.name?.trim().toLowerCase(), item));
+                                const map = new Map(prev.map(item => [(item.name || '').trim().toLowerCase(), item]));
+                                data.forEach(item => map.set((item.name || '').trim().toLowerCase(), item));
                                 return Array.from(map.values());
                             });
                             setDbStatus("Online e Protetto");
@@ -270,8 +270,8 @@
                         if (s.docs.length > 0) {
                             const data = s.docs.map(d => ({ id: d.id, ...d.data() }));
                             setOrders(prev => [...prev, ...data].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i));
-                            setLoading(false);
                         }
+                        setLoading(false);
                     }, (error) => {
                         console.error("Errore lettura ordini:", error);
                         setLoading(false);
@@ -406,7 +406,7 @@
 
                 Object.values(aggregator).forEach(client => {
                     if (client.totalValue > 0) {
-                        const clientBrandsArr = Array.from(client.brands).map(b => b.toLowerCase());
+                        const clientBrandsArr = Array.from(client.brands).map(b => String(b || '').toLowerCase());
                         
                         const missingBrand = AGENCY_PORTFOLIO.find(portfolioBrand => 
                             !clientBrandsArr.some(cb => cb.includes(portfolioBrand.id)) &&
@@ -457,8 +457,8 @@
                     const term = searchTerm.toLowerCase();
                     result = result.filter(c => {
                         const matchesName = c.name.toLowerCase().includes(term);
-                        const matchesBrand = Array.from(c.brands).some(b => b.toLowerCase().includes(term));
-                        const matchesHeader = Array.from(c.headers).some(h => (HEADERS_MAP[h] || h).toLowerCase().includes(term));
+                        const matchesBrand = Array.from(c.brands).some(b => String(b || '').toLowerCase().includes(term));
+                        const matchesHeader = Array.from(c.headers).some(h => (HEADERS_MAP[h] || String(h || '')).toLowerCase().includes(term));
                         return matchesName || matchesBrand || matchesHeader;
                     });
                 }
