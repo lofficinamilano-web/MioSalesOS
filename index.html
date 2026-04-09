@@ -56,11 +56,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        // IMPORTANTE: Abbiamo rimosso signInAnonymously e importato signInWithEmailAndPassword e signOut
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Ricordati di verificare che questo blocco sia aggiornato con le tue vere chiavi Firebase
         const firebaseConfig = { 
             apiKey: "AIzaSyCb-tMn2i9UTzQ_D1xH7E7BPtITiccHoHQ", 
             authDomain: "app-ordini-2ce45.firebaseapp.com", 
@@ -76,8 +74,10 @@
         
         const envAppId = typeof __app_id !== 'undefined' ? __app_id : 'app-ordini-2ce45';
 
-        // Esportiamo i nuovi metodi di autenticazione per React
         window.FirebaseOps = { auth, db, envAppId, collection, onSnapshot, doc, setDoc, serverTimestamp, onAuthStateChanged, signInWithEmailAndPassword, signOut };
+        
+        // COMUNICAZIONE DI SISTEMA: Segnaliamo a React che Firebase ha finito di scaricarsi
+        window.dispatchEvent(new Event('firebase-ready'));
     </script>
 
     <script type="text/babel">
@@ -129,10 +129,8 @@
             { id: 'luisanne', name: 'Luisanne', profile: 'boutique, elegante' }
         ];
 
-        // API Key di Gemini (Inseriscila qui se serve per il Radar)
         const apiKey = ""; 
 
-        // COMPONENTE LOGIN AGGIUNTO
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
@@ -191,12 +189,15 @@
         };
 
         function App() {
+            // NUOVO STATO: Gestisce la "Race Condition" tra Firebase e React
+            const [firebaseReady, setFirebaseReady] = useState(!!window.FirebaseOps);
+            
             const [user, setUser] = useState(null);
             const [isInitializing, setIsInitializing] = useState(true);
             const [customers, setCustomers] = useState([]);
             const [orders, setOrders] = useState([]);
             const [agenda, setAgenda] = useState([]);
-            const [loading, setLoading] = useState(false); // Parte a false, gestito dopo il login
+            const [loading, setLoading] = useState(false);
             const [searchTerm, setSearchTerm] = useState('');
             const [selectedClient, setSelectedClient] = useState(null);
             const [showChart, setShowChart] = useState(null); 
@@ -211,13 +212,22 @@
             const [isScouting, setIsScouting] = useState(false);
             const [scoutResults, setScoutResults] = useState([]);
 
-            // ASSICURATI CHE QUESTO APP_ID SIA QUELLO CORRETTO
             const appId = 'app-ordini-2ce45'; 
 
+            // EFFETTO 1: Aspetta che Firebase sia scaricato da internet
             useEffect(() => {
+                if (!window.FirebaseOps) {
+                    const handleReady = () => setFirebaseReady(true);
+                    window.addEventListener('firebase-ready', handleReady);
+                    return () => window.removeEventListener('firebase-ready', handleReady);
+                }
+            }, []);
+
+            // EFFETTO 2: Solo quando Firebase è pronto, controlla il login
+            useEffect(() => {
+                if (!firebaseReady) return;
+
                 const { auth, onAuthStateChanged } = window.FirebaseOps;
-                
-                // Il listener di Firebase osserva se siamo loggati o no
                 const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
                     setUser(currentUser);
                     setIsInitializing(false);
@@ -230,13 +240,11 @@
                 });
 
                 return () => unsubscribe();
-            }, []);
+            }, [firebaseReady]);
 
             const loadData = (uid) => {
                 const { db, collection, onSnapshot } = window.FirebaseOps;
                 
-                // NOTA: Poiché ora hai cambiato le regole di sicurezza (if request.auth != null),
-                // potrai leggere questi dati SOLO se sei loggato con la tua email/password.
                 const paths = [
                     { id: 'app-ordini-2ce45', c: 'artifacts/app-ordini-2ce45/public/data/anagrafica_clienti', o: 'artifacts/app-ordini-2ce45/public/data/orders' },
                     { id: 'lofficina', c: 'artifacts/app-ordini-lofficina-1/public/data/anagrafica_clienti', o: 'artifacts/app-ordini-lofficina-1/public/data/orders' }
@@ -641,8 +649,8 @@
                 }
             };
 
-            // CONTROLLI DI STATO INIZIALI
-            if (isInitializing) return (
+            // CONTROLLI DI STATO INIZIALI CON PROTEZIONE RACE CONDITION
+            if (!firebaseReady || isInitializing) return (
                 <div className="h-screen flex items-center justify-center bg-stone-900 text-stone-300 font-bold tracking-widest text-xs animate-pulse">
                     <Icons.Zap className="w-5 h-5 mr-2" /> Inizializzazione Ambiente Sicuro...
                 </div>
