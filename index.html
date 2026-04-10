@@ -59,6 +59,7 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // NOTA: mantieni i tuoi dati originali qui se avevi un altro progetto
         const firebaseConfig = { 
             apiKey: "AIzaSyCb-tMn2i9UTzQ_D1xH7E7BPtITiccHoHQ", 
             authDomain: "app-ordini-2ce45.firebaseapp.com", 
@@ -129,7 +130,7 @@
             { id: 'luisanne', name: 'Luisanne', profile: 'boutique, elegante' }
         ];
 
-        // Chiave API di Google Gemini inserita per il funzionamento del Radar AI
+        // Chiave API di Google Gemini
         const apiKey = "AIzaSyDB57xMjeqMx2rwUZGINPd5szHEquWe6Y8"; 
 
         const LoginScreen = () => {
@@ -212,6 +213,7 @@
             const [isScouting, setIsScouting] = useState(false);
             const [scoutResults, setScoutResults] = useState([]);
 
+            // RIPRISTINATE: Variabili necessarie per il funzionamento del modale
             const [showAddModal, setShowAddModal] = useState(false);
             const [newClientData, setNewClientData] = useState({ name: '', city: '', phone: '', agente: "L'Officina" });
 
@@ -572,8 +574,8 @@
 
                     for (let i = 0; i <= 5; i++) {
                         try {
-                            // AGGIORNAMENTO CRITICO: Il modello API è stato modificato da -preview a gemini-1.5-flash
-                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                            // CORREZIONE ENDPOINT: Modello Preview di Gemini per la ricerca live
+                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
