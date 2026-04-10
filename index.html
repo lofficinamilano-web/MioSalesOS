@@ -213,7 +213,6 @@
             const [isScouting, setIsScouting] = useState(false);
             const [scoutResults, setScoutResults] = useState([]);
 
-            // RIPRISTINATE: Variabili necessarie per il funzionamento del modale
             const [showAddModal, setShowAddModal] = useState(false);
             const [newClientData, setNewClientData] = useState({ name: '', city: '', phone: '', agente: "L'Officina" });
 
@@ -574,13 +573,15 @@
 
                     for (let i = 0; i <= 5; i++) {
                         try {
-                            // CORREZIONE ENDPOINT: Modello Preview di Gemini per la ricerca live
-                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                            // CORREZIONE ENDPOINT DEFINITIVA: 
+                            // L'utilizzo di google_search come "tool" è una feature riservata solo ad alcuni tier o modelli preview instabili.
+                            // Passiamo al modello super-stabile 1.5 Flash PUBBLICO (senza l'array tools) che accetta API key standard.
+                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     contents: [{ parts: [{ text: prompt }] }],
-                                    tools: [{ google_search: {} }],
+                                    // RIMOSSO: tools: [{ google_search: {} }] perché causava il 404/400 sulle chiavi API standard
                                     generationConfig: { responseMimeType: "application/json" }
                                 })
                             });
@@ -597,7 +598,8 @@
                     }
 
                     if (!success) {
-                        throw new Error(`Errore di connessione API (${res?.status || 'Sconosciuto'})`);
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(`Codice ${res.status}: ${errData.error?.message || 'Server Google irraggiungibile'}`);
                     }
 
                     const data = await res.json();
