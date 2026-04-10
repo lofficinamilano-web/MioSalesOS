@@ -130,8 +130,9 @@
             { id: 'luisanne', name: 'Luisanne', profile: 'boutique, elegante' }
         ];
 
-        // Chiave API di Google Gemini
-        const apiKey = "AIzaSyDB57xMjeqMx2rwUZGINPd5szHEquWe6Y8"; 
+        // Chiave API di Google Gemini - lasciata vuota per conformità con l'ambiente Canvas. 
+        // RICORDA DI REINSERIRE LA TUA CHIAVE (AIza...) PRIMA DI PUBBLICARE SU NETLIFY!
+        const apiKey = ""; 
 
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
@@ -569,19 +570,20 @@
 
                     let res;
                     let success = false;
-                    const delays = [1000, 2000, 4000, 8000, 16000];
+                    let lastErrorMessage = "";
+                    
+                    // FALLBACK INTELLIGENTE: Il codice proverà in automatico i modelli in questo ordine.
+                    // Se sei su Netlify con la tua chiave pubblica, userà 'gemini-1.5-flash'.
+                    // Se lo esegui nel Canvas, scalerà su 'gemini-2.5-flash-preview'.
+                    const modelsToTry = ['gemini-1.5-flash', 'gemini-2.5-flash-preview-09-2025'];
 
-                    for (let i = 0; i <= 5; i++) {
+                    for (const model of modelsToTry) {
                         try {
-                            // CORREZIONE ENDPOINT DEFINITIVA: 
-                            // L'utilizzo di google_search come "tool" è una feature riservata solo ad alcuni tier o modelli preview instabili.
-                            // Passiamo al modello super-stabile 1.5 Flash PUBBLICO (senza l'array tools) che accetta API key standard.
-                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     contents: [{ parts: [{ text: prompt }] }],
-                                    // RIMOSSO: tools: [{ google_search: {} }] perché causava il 404/400 sulle chiavi API standard
                                     generationConfig: { responseMimeType: "application/json" }
                                 })
                             });
@@ -589,17 +591,18 @@
                             if (res.ok) {
                                 success = true;
                                 break;
+                            } else {
+                                const err = await res.json().catch(() => ({}));
+                                lastErrorMessage = err.error?.message || `Errore HTTP ${res.status}`;
+                                console.warn(`Tentativo con ${model} fallito:`, lastErrorMessage);
                             }
                         } catch (e) {
-                            // Ignora errore di rete durante i retry
+                            lastErrorMessage = e.message;
                         }
-
-                        if (i < 5) await new Promise(resolve => setTimeout(resolve, delays[i]));
                     }
 
                     if (!success) {
-                        const errData = await res.json().catch(() => ({}));
-                        throw new Error(`Codice ${res.status}: ${errData.error?.message || 'Server Google irraggiungibile'}`);
+                        throw new Error(`API Error: ${lastErrorMessage}`);
                     }
 
                     const data = await res.json();
