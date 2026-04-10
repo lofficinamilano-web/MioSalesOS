@@ -59,14 +59,13 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // NOTA: mantieni i tuoi dati originali qui se avevi un altro progetto
-        const firebaseConfig = {
-            apiKey: "34meelxkZZfnpruLPBN5xKkma5G2", 
-            authDomain: "app-ordini-2ce45.firebaseapp.com",
-            projectId: "app-ordini-2ce45",
-            storageBucket: "app-ordini-2ce45.firebasestorage.app",
-            messagingSenderId: "476434424317",
-            appId: "1:476434424317:web:fae0d97d8fc8803301b994"
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCb-tMn2i9UTzQ_D1xH7E7BPtITiccHoHQ", 
+            authDomain: "app-ordini-2ce45.firebaseapp.com", 
+            projectId: "app-ordini-2ce45", 
+            storageBucket: "app-ordini-2ce45.firebasestorage.app", 
+            messagingSenderId: "476434424317", 
+            appId: "1:476434424317:web:fae0d97d8fc8803301b994" 
         };
 
         const app = initializeApp(firebaseConfig);
@@ -130,9 +129,7 @@
             { id: 'luisanne', name: 'Luisanne', profile: 'boutique, elegante' }
         ];
 
-        // Chiave API di Google Gemini - lasciata vuota per conformità con l'ambiente Canvas. 
-        // RICORDA DI REINSERIRE LA TUA CHIAVE (AIza...) PRIMA DI PUBBLICARE SU NETLIFY!
-        const apiKey = "AIzaSyAAlh1oF3MsdwSBhe6CkX4hLDLqLUFJhYE"; 
+        const apiKey = ""; 
 
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
@@ -192,6 +189,7 @@
         };
 
         function App() {
+            // NUOVO STATO: Gestisce la "Race Condition" tra Firebase e React
             const [firebaseReady, setFirebaseReady] = useState(!!window.FirebaseOps);
             
             const [user, setUser] = useState(null);
@@ -214,11 +212,13 @@
             const [isScouting, setIsScouting] = useState(false);
             const [scoutResults, setScoutResults] = useState([]);
 
+            // RIPRISTINATE variabili di stato per il Modale Aggiungi Prospect
             const [showAddModal, setShowAddModal] = useState(false);
             const [newClientData, setNewClientData] = useState({ name: '', city: '', phone: '', agente: "L'Officina" });
 
             const appId = 'app-ordini-2ce45'; 
 
+            // EFFETTO 1: Aspetta che Firebase sia scaricato da internet
             useEffect(() => {
                 if (!window.FirebaseOps) {
                     const handleReady = () => setFirebaseReady(true);
@@ -227,6 +227,7 @@
                 }
             }, []);
 
+            // EFFETTO 2: Solo quando Firebase è pronto, controlla il login
             useEffect(() => {
                 if (!firebaseReady) return;
 
@@ -570,20 +571,16 @@
 
                     let res;
                     let success = false;
-                    let lastErrorMessage = "";
-                    
-                    // FALLBACK INTELLIGENTE: Il codice proverà in automatico i modelli in questo ordine.
-                    // Se sei su Netlify con la tua chiave pubblica, userà 'gemini-1.5-flash'.
-                    // Se lo esegui nel Canvas, scalerà su 'gemini-2.5-flash-preview'.
-                    const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-flash'];
+                    const delays = [1000, 2000, 4000, 8000, 16000];
 
-                    for (const model of modelsToTry) {
+                    for (let i = 0; i <= 5; i++) {
                         try {
-                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     contents: [{ parts: [{ text: prompt }] }],
+                                    tools: [{ google_search: {} }],
                                     generationConfig: { responseMimeType: "application/json" }
                                 })
                             });
@@ -591,18 +588,16 @@
                             if (res.ok) {
                                 success = true;
                                 break;
-                            } else {
-                                const err = await res.json().catch(() => ({}));
-                                lastErrorMessage = err.error?.message || `Errore HTTP ${res.status}`;
-                                console.warn(`Tentativo con ${model} fallito:`, lastErrorMessage);
                             }
                         } catch (e) {
-                            lastErrorMessage = e.message;
+                            // Ignora errore di rete durante i retry
                         }
+
+                        if (i < 5) await new Promise(resolve => setTimeout(resolve, delays[i]));
                     }
 
                     if (!success) {
-                        throw new Error(`API Error: ${lastErrorMessage}`);
+                        throw new Error(`Errore di connessione API (${res?.status || 'Sconosciuto'})`);
                     }
 
                     const data = await res.json();
