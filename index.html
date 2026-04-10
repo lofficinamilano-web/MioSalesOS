@@ -132,7 +132,7 @@
 
         // Chiave API di Google Gemini - lasciata vuota per conformità con l'ambiente Canvas. 
         // RICORDA DI REINSERIRE LA TUA CHIAVE (AIza...) PRIMA DI PUBBLICARE SU NETLIFY!
-        const apiKey = "AIzaSyDB57xMjeqMx2rwUZGINPd5szHEquWe6Y8"; 
+        const apiKey = ""; 
 
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
@@ -575,7 +575,7 @@
                     // FALLBACK INTELLIGENTE: Il codice proverà in automatico i modelli in questo ordine.
                     // Se sei su Netlify con la tua chiave pubblica, userà 'gemini-1.5-flash'.
                     // Se lo esegui nel Canvas, scalerà su 'gemini-2.5-flash-preview'.
-                    const modelsToTry = ['gemini-1.5-flash', 'gemini-2.5-flash-preview-09-2025'];
+                    const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-flash'];
 
                     for (const model of modelsToTry) {
                         try {
