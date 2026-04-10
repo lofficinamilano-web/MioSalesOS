@@ -129,7 +129,8 @@
             { id: 'luisanne', name: 'Luisanne', profile: 'boutique, elegante' }
         ];
 
-        const apiKey = ""; 
+        // Chiave API di Google Gemini inserita per il funzionamento del Radar AI
+        const apiKey = "AIzaSyDB57xMjeqMx2rwUZGINPd5szHEquWe6Y8"; 
 
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
@@ -189,7 +190,6 @@
         };
 
         function App() {
-            // NUOVO STATO: Gestisce la "Race Condition" tra Firebase e React
             const [firebaseReady, setFirebaseReady] = useState(!!window.FirebaseOps);
             
             const [user, setUser] = useState(null);
@@ -212,13 +212,11 @@
             const [isScouting, setIsScouting] = useState(false);
             const [scoutResults, setScoutResults] = useState([]);
 
-            // RIPRISTINATE variabili di stato per il Modale Aggiungi Prospect
             const [showAddModal, setShowAddModal] = useState(false);
             const [newClientData, setNewClientData] = useState({ name: '', city: '', phone: '', agente: "L'Officina" });
 
             const appId = 'app-ordini-2ce45'; 
 
-            // EFFETTO 1: Aspetta che Firebase sia scaricato da internet
             useEffect(() => {
                 if (!window.FirebaseOps) {
                     const handleReady = () => setFirebaseReady(true);
@@ -227,7 +225,6 @@
                 }
             }, []);
 
-            // EFFETTO 2: Solo quando Firebase è pronto, controlla il login
             useEffect(() => {
                 if (!firebaseReady) return;
 
@@ -537,11 +534,6 @@
             const handleScouting = async () => {
                 if (!scoutCity) {
                     alert("Inserisci una città.");
-                    return;
-                }
-                
-                if (!apiKey || apiKey.trim() === "") {
-                    alert("ERRORE 403 (Accesso Negato): Manca la chiave API di Gemini! Cerca 'const apiKey =' nel tuo codice su VS Code (intorno alla riga 165) e incolla la tua vera chiave segreta. Poi fai Commit e Sync.");
                     return;
                 }
                 
