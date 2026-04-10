@@ -540,6 +540,11 @@
                     return;
                 }
                 
+                if (!apiKey || apiKey.trim() === "") {
+                    alert("ERRORE 403 (Accesso Negato): Manca la chiave API di Gemini! Cerca 'const apiKey =' nel tuo codice su VS Code (intorno alla riga 165) e incolla la tua vera chiave segreta. Poi fai Commit e Sync.");
+                    return;
+                }
+                
                 setIsScouting(true);
                 setScoutResults([]);
                 
