@@ -21,21 +21,9 @@
         .pulse-yellow { animation: pulse-yellow 2s infinite; }
         .pulse-red { animation: pulse-red 2s infinite; }
         .pulse-orange { animation: pulse-orange 2s infinite; }
-        @keyframes pulse-yellow { 
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 
-            70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } 
-        }
-        @keyframes pulse-red { 
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 
-            70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 
-        }
-        @keyframes pulse-orange { 
-            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); } 
-            70% { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); } 
-        }
+        @keyframes pulse-yellow { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); } 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); } }
 
         .light-red { background-color: #ef4444; border: 1px solid #fee2e2; }
         .light-yellow { background-color: #f59e0b; border: 1px solid #fef3c7; }
@@ -47,7 +35,6 @@
         @keyframes modalFadeIn { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
         
         select { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
-        
         .bg-pattern { background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 20px 20px; }
     </style>
 </head>
@@ -59,6 +46,7 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Configurazione Firebase: Dati autentici
         const firebaseConfig = { 
             apiKey: "AIzaSyCb-tMn2i9UTzQ_D1xH7E7BPtITiccHoHQ", 
             authDomain: "app-ordini-2ce45.firebaseapp.com", 
@@ -71,12 +59,9 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
         const envAppId = typeof __app_id !== 'undefined' ? __app_id : 'app-ordini-2ce45';
 
         window.FirebaseOps = { auth, db, envAppId, collection, onSnapshot, doc, setDoc, serverTimestamp, onAuthStateChanged, signInWithEmailAndPassword, signOut };
-        
-        // COMUNICAZIONE DI SISTEMA: Segnaliamo a React che Firebase ha finito di scaricarsi
         window.dispatchEvent(new Event('firebase-ready'));
     </script>
 
@@ -97,6 +82,7 @@
             return count;
         };
 
+        // Libreria Icone SVG
         const Icons = {
             Phone: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>,
             Calendar: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
@@ -129,7 +115,8 @@
             { id: 'luisanne', name: 'Luisanne', profile: 'boutique, elegante' }
         ];
 
-        const apiKey = ""; 
+        // API Key Gemini per Radar AI (Modello 1.5 Flash - Sicuro e Pubblico)
+        const apiKey = "AIzaSyAAlh1oF3MsdwSBhe6CkX4hLDLqLUFJhYE"; 
 
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
@@ -144,81 +131,73 @@
                 try {
                     await window.FirebaseOps.signInWithEmailAndPassword(window.FirebaseOps.auth, email, password);
                 } catch (err) {
-                    console.error("Errore di Login:", err);
-                    setError("Credenziali errate o account non esistente.");
+                    setError("Accesso negato. Controlla le credenziali o la connessione.");
                     setIsLoggingIn(false);
                 }
             };
 
             return (
                 <div className="min-h-screen bg-stone-900 flex flex-col items-center justify-center p-4 bg-pattern">
-                    <form onSubmit={handleLogin} className="bg-white p-8 md:p-10 rounded-[2rem] shadow-2xl w-full max-w-sm flex flex-col gap-6 border border-stone-200 fade-in">
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-3xl font-black mx-auto mb-5 tracking-tighter shadow-lg shadow-emerald-500/30">L'O</div>
-                            <h1 className="text-3xl font-extrabold text-stone-800 tracking-tight">Sales OS</h1>
-                            <p className="text-sm text-stone-500 mt-1 font-semibold uppercase tracking-widest">Area Riservata</p>
+                    <form onSubmit={handleLogin} className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl w-full max-w-md flex flex-col gap-6 border border-stone-200 fade-in relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+                        <div className="text-center mt-2">
+                            <div className="w-20 h-20 bg-emerald-500 text-white rounded-[1.5rem] flex items-center justify-center text-4xl font-black mx-auto mb-6 shadow-xl shadow-emerald-500/40 transform rotate-3 hover:rotate-0 transition-transform">L'O</div>
+                            <h1 className="text-4xl font-black text-stone-800 tracking-tighter mb-2">Sales OS</h1>
+                            <p className="text-xs text-stone-400 font-bold uppercase tracking-[0.3em]">Security Data Layer</p>
                         </div>
-                        
-                        {error && (
-                            <div className="bg-rose-50 text-rose-600 p-4 rounded-xl text-xs text-center border border-rose-200 font-bold flex items-center gap-2">
-                                <Icons.AlertTriangle /> {error}
-                            </div>
-                        )}
-                        
-                        <div className="space-y-4 mt-2">
+                        {error && <div className="bg-rose-50 text-rose-600 p-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 border border-rose-200"><Icons.AlertTriangle /> {error}</div>}
+                        <div className="space-y-4 mt-4">
                             <div>
-                                <label className="block text-[10px] font-black text-stone-400 uppercase mb-2 tracking-wider pl-1">Email Aziendale</label>
-                                <input type="email" placeholder="nome@agenzia.com" value={email} onChange={e => setEmail(e.target.value)} className="w-full p-4 bg-stone-50 border border-stone-200 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all text-stone-800" required />
+                                <label className="block text-[11px] font-black text-stone-400 uppercase tracking-widest mb-2 pl-2">Email Operatore</label>
+                                <input type="email" placeholder="nome@agenzia.com" value={email} onChange={e => setEmail(e.target.value)} className="w-full p-5 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-bold outline-none focus:border-emerald-500 focus:ring-4 ring-emerald-50 transition-all text-stone-800 shadow-inner" required />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-stone-400 uppercase mb-2 tracking-wider pl-1">Password</label>
-                                <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-4 bg-stone-50 border border-stone-200 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all text-stone-800" required />
+                                <label className="block text-[11px] font-black text-stone-400 uppercase tracking-widest mb-2 pl-2">Password</label>
+                                <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-5 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-bold outline-none focus:border-emerald-500 focus:ring-4 ring-emerald-50 transition-all text-stone-800 shadow-inner" required />
                             </div>
                         </div>
-                        
-                        <button type="submit" disabled={isLoggingIn} className="w-full bg-stone-900 text-white p-4 rounded-xl font-bold hover:bg-emerald-600 transition-colors shadow-md mt-2 disabled:opacity-50">
-                            {isLoggingIn ? 'Verifica in corso...' : 'Accedi al Sistema'}
+                        <button type="submit" disabled={isLoggingIn} className="w-full bg-stone-900 text-white p-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-emerald-500 transition-colors shadow-lg mt-4 disabled:opacity-50 flex justify-center items-center gap-2">
+                            {isLoggingIn ? <><Icons.Zap className="animate-spin w-4 h-4"/> Sincronizzazione...</> : 'Accedi al Sistema'}
                         </button>
                     </form>
-                    
-                    <div className="mt-8 text-stone-500 text-[10px] font-semibold uppercase tracking-widest opacity-50 text-center">
-                        Secure Access Protocol • CI/CD Enabled
+                    <div className="mt-8 text-stone-500 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
+                        Cloudflare Edge Network • Active
                     </div>
                 </div>
             );
         };
 
         function App() {
-            // NUOVO STATO: Gestisce la "Race Condition" tra Firebase e React
+            // Stato di base
             const [firebaseReady, setFirebaseReady] = useState(!!window.FirebaseOps);
-            
             const [user, setUser] = useState(null);
             const [isInitializing, setIsInitializing] = useState(true);
+            const [loading, setLoading] = useState(false);
+            const [dbStatus, setDbStatus] = useState("Connessione...");
+            
+            // Dati
             const [customers, setCustomers] = useState([]);
             const [orders, setOrders] = useState([]);
             const [agenda, setAgenda] = useState([]);
-            const [loading, setLoading] = useState(false);
+            
+            // UI State
             const [searchTerm, setSearchTerm] = useState('');
+            const [targetSeason, setTargetSeason] = useState("PE_27");
+            const [activeView, setActiveView] = useState("call-list"); // 'call-list', 'scouting', 'routing', 'historical'
             const [selectedClient, setSelectedClient] = useState(null);
             const [showChart, setShowChart] = useState(null); 
-            const [dbStatus, setDbStatus] = useState("In attesa...");
+            const [showAddModal, setShowAddModal] = useState(false);
+            const [newClientData, setNewClientData] = useState({ name: '', city: '', phone: '', agente: "L'Officina" });
             
-            const [targetSeason, setTargetSeason] = useState("PE_27");
-            const [activeView, setActiveView] = useState("call-list"); 
-            
+            // Scouting State
             const [routingCity, setRoutingCity] = useState('');
-            
             const [scoutCity, setScoutCity] = useState('');
             const [isScouting, setIsScouting] = useState(false);
             const [scoutResults, setScoutResults] = useState([]);
 
-            // RIPRISTINATE variabili di stato per il Modale Aggiungi Prospect
-            const [showAddModal, setShowAddModal] = useState(false);
-            const [newClientData, setNewClientData] = useState({ name: '', city: '', phone: '', agente: "L'Officina" });
-
             const appId = 'app-ordini-2ce45'; 
 
-            // EFFETTO 1: Aspetta che Firebase sia scaricato da internet
+            // Firebase Initialization Check
             useEffect(() => {
                 if (!window.FirebaseOps) {
                     const handleReady = () => setFirebaseReady(true);
@@ -227,138 +206,98 @@
                 }
             }, []);
 
-            // EFFETTO 2: Solo quando Firebase è pronto, controlla il login
+            // Auth Listener
             useEffect(() => {
                 if (!firebaseReady) return;
-
                 const { auth, onAuthStateChanged } = window.FirebaseOps;
                 const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
                     setUser(currentUser);
                     setIsInitializing(false);
-                    
                     if (currentUser) {
                         setLoading(true);
-                        setDbStatus("Connessione DB...");
-                        loadData(currentUser.uid);
+                        loadData();
                     }
                 });
-
                 return () => unsubscribe();
             }, [firebaseReady]);
 
-            const loadData = (uid) => {
+            const loadData = () => {
                 const { db, collection, onSnapshot } = window.FirebaseOps;
-                
                 const paths = [
                     { id: 'app-ordini-2ce45', c: 'artifacts/app-ordini-2ce45/public/data/anagrafica_clienti', o: 'artifacts/app-ordini-2ce45/public/data/orders' },
                     { id: 'lofficina', c: 'artifacts/app-ordini-lofficina-1/public/data/anagrafica_clienti', o: 'artifacts/app-ordini-lofficina-1/public/data/orders' }
                 ];
                 
                 paths.forEach(p => {
+                    // Fetch Customers
                     onSnapshot(collection(db, p.c), s => {
-                        if (s.docs.length > 0) {
-                            const data = s.docs.map(d => ({ id: d.id, ...d.data() }));
-                            setCustomers(prev => {
-                                const map = new Map(prev.map(item => [(item.name || '').trim().toLowerCase(), item]));
-                                data.forEach(item => map.set((item.name || '').trim().toLowerCase(), item));
-                                return Array.from(map.values());
-                            });
-                            setDbStatus("Online e Protetto");
-                        }
-                    }, (error) => {
-                        console.error("Errore lettura clienti:", error);
-                        setDbStatus("Accesso Negato");
+                        const data = s.docs.map(d => ({ id: d.id, ...d.data() }));
+                        setCustomers(prev => {
+                            const map = new Map(prev.map(item => [item.name?.trim().toLowerCase(), item]));
+                            data.forEach(item => map.set(item.name?.trim().toLowerCase(), item));
+                            return Array.from(map.values());
+                        });
+                        setDbStatus("Online");
                     });
-
+                    
+                    // Fetch Orders
                     onSnapshot(collection(db, p.o), s => {
-                        if (s.docs.length > 0) {
-                            const data = s.docs.map(d => ({ id: d.id, ...d.data() }));
-                            setOrders(prev => [...prev, ...data].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i));
-                        }
-                        setLoading(false);
-                    }, (error) => {
-                        console.error("Errore lettura ordini:", error);
+                        const data = s.docs.map(d => ({ id: d.id, ...d.data() }));
+                        setOrders(prev => {
+                            const map = new Map(prev.map(item => [item.id, item]));
+                            data.forEach(item => map.set(item.id, item));
+                            return Array.from(map.values());
+                        });
                         setLoading(false);
                     });
                 });
                 
+                // Fetch Agenda
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'agenda_luci'), s => {
                     setAgenda(s.docs.map(d => ({ id: d.id, ...d.data() })));
                 });
             };
 
-            const handleLogout = () => {
-                window.FirebaseOps.signOut(window.FirebaseOps.auth).catch(err => console.error("Errore Logout", err));
-            };
-
-            const availableSeasons = useMemo(() => {
-                const seasons = new Set(["PE_27", "AI_27"]); 
-                orders.forEach(o => {
-                    if (o.orderMeta?.season) seasons.add(o.orderMeta.season);
-                });
-                const excludedSeasons = ['PE_26', 'AI_26', 'PE_25', 'AI_25', 'PE_24', 'AI_24'];
-                return Array.from(seasons)
-                    .filter(s => !excludedSeasons.includes(s))
-                    .sort().reverse(); 
-            }, [orders]);
-
-            const previousSeasonAnalogous = useMemo(() => {
-                if(!targetSeason) return null;
-                const parts = targetSeason.split('_');
-                if(parts.length !== 2) return null;
-                return `${parts[0]}_${parseInt(parts[1]) - 1}`; 
-            }, [targetSeason]);
-
+            // Il Cervello Analitico (Elaborazione Dati, Churn, Cross-sell)
             const processedClients = useMemo(() => {
                 const aggregator = {};
+                const currentYear = parseInt(targetSeason.split('_')[1]);
+                const prevSeasonCode = targetSeason.startsWith('PE') ? `PE_${currentYear - 1}` : `AI_${currentYear - 1}`;
 
                 const initClient = (cName) => {
                     if (!aggregator[cName]) {
-                        const rubrica = customers.find(c => (c.name || '').trim().toLowerCase() === cName.toLowerCase()) || {};
-                        const statusRecord = agenda.find(a => a.clientName === cName) || { status: 'rosso', lastUpdate: null, notes: '', lastUpdatedBy: null };
-                        
+                        const rubrica = customers.find(c => c.name?.trim().toLowerCase() === cName.toLowerCase()) || {};
+                        const statusRecord = agenda.find(a => a.clientName === cName) || { status: 'rosso', notes: '', lastUpdate: null };
                         const agente = (rubrica.agente || '').toLowerCase();
-                        const isMyAgent = !agente || agente.includes('officina') || agente.includes('quid');
-
                         aggregator[cName] = {
-                            name: cName,
-                            city: rubrica.city || 'N/D',
-                            phone: rubrica.phone || '',
-                            mobile: rubrica.cellulare || '',
-                            history: [],
-                            brands: new Set(),
-                            headers: new Set(),
+                            name: cName, 
+                            city: rubrica.city || 'N/D', 
+                            phone: rubrica.phone || rubrica.cellulare || '', 
                             totalValue: 0,
-                            lightStatus: statusRecord.status,
+                            lightStatus: statusRecord.status, 
+                            notes: statusRecord.notes || '', 
                             lastUpdate: statusRecord.lastUpdate,
-                            notes: statusRecord.notes || '',
-                            lastUpdatedBy: statusRecord.lastUpdatedBy,
-                            hasTargetSeason: false,
-                            isMyAgent: isMyAgent,
+                            isMyAgent: !agente || agente.includes('officina') || agente.includes('quid'),
                             agenteAssegnato: agente || 'Non Assegnato',
-                            
-                            hasPreviousSeason: false,
+                            brands: new Set(), 
+                            headers: new Set(),
+                            history: [], 
+                            hasTargetSeason: false, 
                             previousSeasonValue: 0,
-                            previousSeasonFirstOrderDate: null, 
-                            isChurnRisk: false,
-                            churnStatus: 'none', 
-                            churnDeadline: null,
-                            
-                            crossSellSuggestion: null
+                            crossSellSuggestion: null, 
+                            isChurnRisk: false, 
+                            churnStatus: 'none'
                         };
                     }
                     return aggregator[cName];
                 };
 
-                customers.forEach(c => {
-                    const name = (c.name || '').trim();
-                    if(name) initClient(name);
-                });
-
+                customers.forEach(c => c.name && initClient(c.name.trim()));
+                
                 orders.forEach(o => {
-                    const cName = (o.clientData?.name || "Ignoto").trim();
+                    const cName = o.clientData?.name?.trim();
                     if (!cName || cName === "Ignoto") return;
-
+                    
                     const client = initClient(cName);
                     
                     const agenteOrdine = (o.orderMeta?.agente || o.clientData?.agente || '').toLowerCase();
@@ -368,114 +307,74 @@
                     }
 
                     if (o.orderMeta?.season === targetSeason) client.hasTargetSeason = true;
-                    if (o.orderMeta?.season === previousSeasonAnalogous) {
-                        client.hasPreviousSeason = true;
-                        client.previousSeasonValue += (o.totals?.baseImponibileIva || 0);
-                        
-                        const rawDate = o.date || o.orderMeta?.date || o.createdAt;
-                        let orderDateObj = null;
-                        if (rawDate) {
-                            if (rawDate.seconds) orderDateObj = new Date(rawDate.seconds * 1000);
-                            else orderDateObj = new Date(rawDate);
-                        }
-
-                        if (orderDateObj && !isNaN(orderDateObj.getTime())) {
-                            if (!client.previousSeasonFirstOrderDate || orderDateObj < client.previousSeasonFirstOrderDate) {
-                                client.previousSeasonFirstOrderDate = orderDateObj;
-                            }
-                        }
-                    }
-
-                    client.headers.add(o.headerKey);
+                    if (o.orderMeta?.season === prevSeasonCode) client.previousSeasonValue += (o.totals?.baseImponibileIva || 0);
                     
                     let orderBrands = [];
                     if (o.items) {
-                        o.items.forEach(item => { 
+                        o.items.forEach(item => {
                             if(item.marchio) {
-                                client.brands.add(item.marchio); 
-                                if (!orderBrands.includes(item.marchio)) orderBrands.push(item.marchio);
+                                client.brands.add(item.marchio);
+                                if(!orderBrands.includes(item.marchio)) orderBrands.push(item.marchio);
                             }
                         });
                     }
 
+                    client.headers.add(o.headerKey);
+
                     client.history.push({ 
                         season: o.orderMeta?.season || 'N/D', 
-                        header: HEADERS_MAP[o.headerKey] || o.headerKey || 'N/D', 
-                        brands: orderBrands.join(', ') || 'N/D',
                         pairs: o.totals?.totalPieces || 0, 
-                        value: o.totals?.baseImponibileIva || 0 
+                        value: o.totals?.baseImponibileIva || 0,
+                        header: HEADERS_MAP[o.headerKey] || o.headerKey,
+                        brands: orderBrands.join(', ')
                     });
+                    
                     client.totalValue += (o.totals?.baseImponibileIva || 0);
                 });
 
-                Object.values(aggregator).forEach(client => {
-                    if (client.totalValue > 0) {
-                        const clientBrandsArr = Array.from(client.brands).map(b => String(b || '').toLowerCase());
-                        
-                        const missingBrand = AGENCY_PORTFOLIO.find(portfolioBrand => 
-                            !clientBrandsArr.some(cb => cb.includes(portfolioBrand.id)) &&
-                            !clientBrandsArr.some(cb => cb.includes(portfolioBrand.name.toLowerCase()))
-                        );
-
-                        if (missingBrand) {
-                            let pitch = `Il cliente acquista già altri marchi ma non ha mai trattato ${missingBrand.name}. `;
-                            if (missingBrand.id === 'bio-optimus') pitch += "Essendo una linea comfort con plantare, è un'ottima integrazione stabile.";
-                            else if (missingBrand.id === 'verbenas') pitch += "Ottimo per incrementare la vendita d'impulso estiva.";
-                            else pitch += `Valuta un inserimento basato sul posizionamento: ${missingBrand.profile}.`;
-                            
-                            client.crossSellSuggestion = { brand: missingBrand.name, pitch };
-                        }
-                    }
-                });
-
+                // Analisi Strategica Predittiva
                 const today = new Date();
-                const currentMonth = today.getMonth(); 
+                const currentMonth = today.getMonth();
                 
-                Object.values(aggregator).forEach(client => {
-                    if (client.hasPreviousSeason && !client.hasTargetSeason && client.isMyAgent) {
+                Object.values(aggregator).forEach(c => {
+                    // Calcolo Churn Risk (Se ha comprato la stagione precedente, ma non questa)
+                    if (c.previousSeasonValue > 0 && !c.hasTargetSeason && c.isMyAgent) {
+                        c.isChurnRisk = true;
                         const isPE = targetSeason.startsWith('PE');
                         const isAI = targetSeason.startsWith('AI');
-
-                        if (isPE) {
-                            if (currentMonth < 6) client.churnStatus = 'orange';
-                            else client.churnStatus = 'red';
-                        } else if (isAI) {
-                            if (currentMonth < 1) client.churnStatus = 'orange';
-                            else client.churnStatus = 'red';
-                        }
-
-                        if (client.churnStatus !== 'none') {
-                            client.isChurnRisk = true;
+                        
+                        if (isPE) c.churnStatus = currentMonth > 5 ? 'red' : 'orange';
+                        else if (isAI) c.churnStatus = currentMonth > 0 ? 'red' : 'orange';
+                    }
+                    
+                    // Calcolo Cross-Sell Recommendation
+                    if (c.totalValue > 0) {
+                        const bArr = Array.from(c.brands).map(b => b.toLowerCase());
+                        const missing = AGENCY_PORTFOLIO.find(p => !bArr.some(cb => cb.includes(p.id)) && !bArr.some(cb => cb.includes(p.name.toLowerCase())));
+                        if (missing) {
+                            let pitch = `Il cliente non ha mai trattato ${missing.name}. `;
+                            if (missing.id === 'bio-optimus') pitch += "Ottima integrazione stabile: linea comfort con plantare.";
+                            else if (missing.id === 'verbenas') pitch += "Ideale per spingere la vendita d'impulso estiva.";
+                            else pitch += `Valuta l'inserimento per il suo posizionamento: ${missing.profile}.`;
+                            c.crossSellSuggestion = { brand: missing.name, pitch };
                         }
                     }
-                });
-
-                agenda.forEach(a => {
-                    const name = (a.clientName || '').trim();
-                    if(name) initClient(name);
                 });
 
                 let result = Object.values(aggregator).filter(c => !c.hasTargetSeason);
-
+                
                 if (searchTerm && activeView !== 'routing' && activeView !== 'scouting') {
                     const term = searchTerm.toLowerCase();
-                    result = result.filter(c => {
-                        const matchesName = c.name.toLowerCase().includes(term);
-                        const matchesBrand = Array.from(c.brands).some(b => String(b || '').toLowerCase().includes(term));
-                        const matchesHeader = Array.from(c.headers).some(h => (HEADERS_MAP[h] || String(h || '')).toLowerCase().includes(term));
-                        return matchesName || matchesBrand || matchesHeader;
-                    });
+                    result = result.filter(c => 
+                        c.name.toLowerCase().includes(term) || 
+                        Array.from(c.brands).some(b => b.toLowerCase().includes(term)) ||
+                        Array.from(c.headers).some(h => (HEADERS_MAP[h] || h).toLowerCase().includes(term))
+                    );
                 }
-
-                result.sort((a, b) => {
-                    if(a.isChurnRisk && !b.isChurnRisk) return -1;
-                    if(!a.isChurnRisk && b.isChurnRisk) return 1;
-                    return b.totalValue - a.totalValue;
-                });
-
+                
                 const main = result.filter(c => c.totalValue > 0 && c.isMyAgent);
                 const historical = result.filter(c => !(c.totalValue > 0 && c.isMyAgent));
-
+                
                 let routingResults = { urgent: [], prospect: [], active: [] };
                 if (activeView === 'routing' && routingCity.length > 2) {
                     const cityTerm = routingCity.toLowerCase().trim();
@@ -485,8 +384,12 @@
                     routingResults.prospect = inCity.filter(c => c.totalValue === 0 || !c.isMyAgent);
                     routingResults.active = inCity.filter(c => (c.hasTargetSeason && c.isMyAgent) || (!c.isChurnRisk && c.totalValue > 0 && c.isMyAgent));
                 }
-
-                return { main, historical, routingResults, totalCount: result.length };
+                
+                return { 
+                    main: main.sort((a,b) => (a.isChurnRisk === b.isChurnRisk) ? b.totalValue - a.totalValue : a.isChurnRisk ? -1 : 1),
+                    historical: historical.sort((a,b) => b.totalValue - a.totalValue),
+                    routingResults
+                };
             }, [customers, orders, agenda, searchTerm, targetSeason, activeView, routingCity]);
 
             const totalListValue = useMemo(() => {
@@ -497,36 +400,27 @@
             const saveClientData = async (clientName, status, notes) => {
                 const { db, doc, setDoc, serverTimestamp } = window.FirebaseOps;
                 const docId = btoa(clientName).replace(/[^a-zA-Z0-9]/g, ''); 
-                try {
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agenda_luci', docId), {
-                        clientName, 
-                        status: status || selectedClient.lightStatus, 
-                        notes: notes !== undefined ? notes : selectedClient.notes,
-                        lastUpdate: new Date().toISOString(), 
-                        lastUpdatedBy: user.uid,
-                        serverUpdate: serverTimestamp()
-                    }, { merge: true });
-                    if (status) setSelectedClient(null);
-                } catch(e) { console.error(e); }
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agenda_luci', docId), {
+                    clientName, 
+                    status: status || selectedClient.lightStatus, 
+                    notes: notes !== undefined ? notes : selectedClient.notes,
+                    lastUpdate: new Date().toISOString(), 
+                    lastUpdatedBy: user.uid,
+                    serverUpdate: serverTimestamp()
+                }, { merge: true });
+                if (status) setSelectedClient(null);
             };
 
             const handleAddNewClient = async (e) => {
                 e.preventDefault();
                 if(!newClientData.name.trim()) return;
-                
                 const { db, doc, setDoc } = window.FirebaseOps;
                 const safeName = newClientData.name.trim();
                 const docId = 'manual_' + btoa(safeName).replace(/[^a-zA-Z0-9]/g, '') + Date.now();
-                
                 try {
                     await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'anagrafica_clienti', docId), {
-                        name: safeName,
-                        city: newClientData.city,
-                        phone: newClientData.phone,
-                        agente: newClientData.agente,
-                        source: 'manual_prospect'
+                        name: safeName, city: newClientData.city, phone: newClientData.phone, agente: newClientData.agente, source: 'manual_prospect'
                     });
-                    
                     setShowAddModal(false);
                     setNewClientData({ name: '', city: '', phone: '', agente: "L'Officina" });
                 } catch (e) {
@@ -536,192 +430,127 @@
 
             const handleScouting = async () => {
                 if (!scoutCity) {
-                    alert("Inserisci una città.");
+                    alert("Inserisci una Provincia o Città per avviare l'analisi.");
                     return;
                 }
-                
                 setIsScouting(true);
                 setScoutResults([]);
-                
                 try {
                     const portfolioContext = AGENCY_PORTFOLIO.map(p => `${p.name} (${p.profile})`).join(', ');
-                    
                     const prompt = `Sei un Direttore Commerciale B2B spietato ed esperto in Italia, focalizzato sul fatturato.
                     Obiettivo: Estrarre un database massivo di prospect caldi.
-                    Devi trovare IL MAGGIOR NUMERO POSSIBILE DI NEGOZI (almeno 20-30, fino a 40 se esistono) nella città e provincia di: ${scoutCity}. 
+                    Devi trovare IL MAGGIOR NUMERO POSSIBILE DI NEGOZI (almeno 15, fino a 30) nella città e provincia di: ${scoutCity}. 
                     Cerca: boutique di calzature indipendenti o negozi di abbigliamento multimarca di fascia media/alta che trattano anche scarpe.
                     
-                    ISTRUZIONI COMMERCIALI:
-                    Cerca segnali di VERO potere d'acquisto nel mercato B2B. Escludi i discount, le catene low-cost e il lusso estremo.
-                    Noi vendiamo questi brand: ${portfolioContext}.
+                    ISTRUZIONI:
+                    Escludi i discount, le catene low-cost e il lusso estremo. Noi vendiamo: ${portfolioContext}.
+                    Sii sintetico. La "reason" deve essere di MAX 5 PAROLE.
                     
-                    ATTENZIONE AI LIMITI DI SPAZIO: Per riuscire a restituire tanti risultati senza interrompere il codice, DEVI essere estremamente sintetico. La "reason" deve essere di MASSIMO 4-5 PAROLE (es. "Vende brand X, ottimo posizionamento").
+                    Restituisci ESATTAMENTE e SOLO un array JSON valido in questo formato, senza markdown:
+                    [{"name": "Nome Negozio", "address": "Indirizzo/Città", "phone": "Tel", "score": 85, "reason": "Motivo breve", "suggested_brand": "Brand da proporre"}]`;
                     
-                    Restituisci ESATTAMENTE e SOLO un array JSON valido in questo formato, senza MAI aggiungere testo introduttivo, markdown o chiacchiere:
-                    [
-                        {
-                            "name": "Nome Negozio Reale",
-                            "address": "Indirizzo o solo Città",
-                            "phone": "Telefono (o N/D)",
-                            "score": 85,
-                            "reason": "Max 5 parole",
-                            "suggested_brand": "Quale nostro brand proporre"
-                        }
-                    ]`;
-
-                    let res;
-                    let success = false;
-                    const delays = [1000, 2000, 4000, 8000, 16000];
-
-                    for (let i = 0; i <= 5; i++) {
-                        try {
-                            res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    contents: [{ parts: [{ text: prompt }] }],
-                                    tools: [{ google_search: {} }],
-                                    generationConfig: { responseMimeType: "application/json" }
-                                })
-                            });
-
-                            if (res.ok) {
-                                success = true;
-                                break;
-                            }
-                        } catch (e) {
-                            // Ignora errore di rete durante i retry
-                        }
-
-                        if (i < 5) await new Promise(resolve => setTimeout(resolve, delays[i]));
-                    }
-
-                    if (!success) {
-                        throw new Error(`Errore di connessione API (${res?.status || 'Sconosciuto'})`);
-                    }
-
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } })
+                    });
+                    
+                    if (!res.ok) throw new Error("Errore API HTTP " + res.status);
                     const data = await res.json();
-                    let parsedData = [];
-                    try {
-                        let content = data.candidates[0].content.parts[0].text;
-                        
-                        const jsonMatch = content.match(/\[\s*\{[\s\S]*\}\s*\]/);
-                        if (jsonMatch) {
-                            parsedData = JSON.parse(jsonMatch[0]);
-                        } else {
-                            content = content.replace(/```json/g, '').replace(/```/g, '').trim();
-                            parsedData = JSON.parse(content);
-                        }
-                    } catch (parseError) {
-                        throw new Error("L'AI ha prodotto troppi dati e si è interrotta prima di completare il file. Prova a cercare una provincia più specifica.");
-                    }
                     
-                    if(parsedData.length === 0) {
-                       throw new Error("Nessun risultato commerciale trovato in questa zona."); 
-                    }
-
-                    parsedData.sort((a, b) => b.score - a.score);
-                    setScoutResults(parsedData);
-
-                } catch (error) {
-                    console.error("Scouting Error:", error);
-                    alert("Scouting fallito: " + error.message);
-                } finally {
-                    setIsScouting(false);
+                    let parsedData = [];
+                    let content = data.candidates[0].content.parts[0].text;
+                    const jsonMatch = content.match(/\[\s*\{[\s\S]*\}\s*\]/);
+                    if (jsonMatch) parsedData = JSON.parse(jsonMatch[0]);
+                    else parsedData = JSON.parse(content.replace(/```json/g, '').replace(/```/g, '').trim());
+                    
+                    setScoutResults(parsedData.sort((a, b) => b.score - a.score));
+                } catch (e) { 
+                    alert("Radar Fallito: Controlla la API Key di Gemini o la tua connessione.\n" + e.message); 
+                } finally { 
+                    setIsScouting(false); 
                 }
             };
 
             const handleSaveScoutLead = async (lead) => {
                 const { db, doc, setDoc } = window.FirebaseOps;
                 const docId = 'ai_prospect_' + btoa(lead.name).replace(/[^a-zA-Z0-9]/g, '') + Date.now();
-                
                 try {
                     await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'anagrafica_clienti', docId), {
-                        name: lead.name,
-                        city: scoutCity,
-                        indirizzo: lead.address,
-                        phone: lead.phone,
-                        agente: "L'Officina",
-                        source: 'ai_scouting',
-                        ai_score: lead.score,
-                        ai_reason: lead.reason
+                        name: lead.name, city: scoutCity, indirizzo: lead.address, phone: lead.phone, agente: "L'Officina", source: 'ai_scouting', ai_score: lead.score, ai_reason: lead.reason
                     });
-                    
                     setScoutResults(prev => prev.filter(r => r.name !== lead.name));
                 } catch (e) {
                     console.error("Errore salvataggio lead AI", e);
                 }
             };
 
-            // CONTROLLI DI STATO INIZIALI CON PROTEZIONE RACE CONDITION
+            // BLOCCO DI SICUREZZA
             if (!firebaseReady || isInitializing) return (
-                <div className="h-screen flex items-center justify-center bg-stone-900 text-stone-300 font-bold tracking-widest text-xs animate-pulse">
-                    <Icons.Zap className="w-5 h-5 mr-2" /> Inizializzazione Ambiente Sicuro...
+                <div className="h-screen flex items-center justify-center bg-stone-900 text-stone-400 font-black tracking-widest text-xs uppercase animate-pulse">
+                    <Icons.Zap className="w-5 h-5 mr-3 text-emerald-500" /> Security Layer Initialization...
                 </div>
             );
-
-            // SE L'UTENTE NON È LOGGATO, MOSTRA LA SCHERMATA DI LOGIN
             if (!user) return <LoginScreen />;
-
-            // SE È LOGGATO MA I DATI STANNO ANCORA CARICANDO
             if (loading) return (
-                <div className="h-screen flex items-center justify-center bg-stone-900 text-stone-300 font-bold tracking-widest text-xs animate-pulse">
-                    Decrittazione Dati in corso...
+                <div className="h-screen flex items-center justify-center bg-stone-900 text-stone-400 font-black tracking-widest text-xs uppercase animate-pulse">
+                    Decrittazione Database...
                 </div>
             );
 
+            // COMPONENTE CARTA CLIENTE REUSABILE
             const renderClientCard = (c, idx, isRoutingContext = false) => {
                 const daysPassed = getWorkingDaysElapsed(c.lastUpdate);
                 const isAlert = c.lightStatus === 'giallo' && daysPassed >= 5;
                 const isProspect = c.totalValue === 0;
 
-                const cardBorderClass = c.churnStatus === 'red' ? 'border-rose-300 hover:border-rose-400 bg-rose-50/30' :
-                                        c.churnStatus === 'orange' ? 'border-orange-300 hover:border-orange-400 bg-orange-50/30' :
-                                        'border-stone-200/60 hover:border-indigo-300';
+                const cardBorderClass = c.churnStatus === 'red' ? 'border-rose-300 hover:border-rose-500 bg-rose-50/40 shadow-rose-100' :
+                                        c.churnStatus === 'orange' ? 'border-orange-300 hover:border-orange-500 bg-orange-50/40 shadow-orange-100' :
+                                        'border-stone-200 hover:border-indigo-400 bg-white';
 
                 return (
-                    <div key={idx} onClick={() => setSelectedClient(c)} className={`bg-white p-4 rounded-2xl shadow-sm border hover:shadow transition-all cursor-pointer flex items-center justify-between group fade-in ${cardBorderClass}`}>
-                        <div className="flex items-center gap-5 w-full">
-                            <div className="flex flex-col gap-1.5 border-r border-stone-100 pr-5 shrink-0">
-                                <div className={`w-3 h-3 rounded-full ${c.lightStatus === 'verde' ? 'light-green' : 'light-off'}`}></div>
-                                <div className={`w-3 h-3 rounded-full ${c.lightStatus === 'giallo' ? 'light-yellow' : 'light-off'} ${isAlert ? 'pulse-yellow' : ''}`}></div>
-                                <div className={`w-3 h-3 rounded-full ${c.lightStatus === 'rosso' ? 'light-red' : 'light-off'}`}></div>
-                                <div className={`w-3 h-3 rounded-full mt-1 ${c.notes ? 'light-blue' : 'light-off'}`} title="Note presenti"></div>
+                    <div key={idx} onClick={() => setSelectedClient(c)} className={`p-5 rounded-3xl shadow-sm border transition-all cursor-pointer flex items-center justify-between group fade-in ${cardBorderClass}`}>
+                        <div className="flex items-center gap-5 w-full overflow-hidden">
+                            <div className="flex flex-col gap-1.5 pr-5 border-r border-stone-200/60 shrink-0">
+                                <div className={`w-3.5 h-3.5 rounded-full shadow-inner ${c.lightStatus === 'verde' ? 'light-green' : 'light-off'}`}></div>
+                                <div className={`w-3.5 h-3.5 rounded-full shadow-inner ${c.lightStatus === 'giallo' ? 'light-yellow' : 'light-off'} ${isAlert ? 'pulse-yellow' : ''}`}></div>
+                                <div className={`w-3.5 h-3.5 rounded-full shadow-inner ${c.lightStatus === 'rosso' ? 'light-red' : 'light-off'}`}></div>
+                                <div className={`w-3 h-3 rounded-full mt-1.5 mx-auto ${c.notes ? 'light-blue' : 'opacity-0'}`} title="Note presenti"></div>
                             </div>
-                            <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-2 overflow-hidden">
+                            <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-3 overflow-hidden pr-2">
                                 <div className="flex flex-col justify-center">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="text-[15px] font-bold text-stone-800 leading-tight group-hover:text-indigo-600 transition-colors truncate max-w-[200px] md:max-w-[300px]">{c.name}</h3>
-                                        {c.churnStatus === 'red' && <span className="bg-rose-100 text-rose-700 text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 pulse-red"><Icons.AlertTriangle /> Scaduto</span>}
-                                        {c.churnStatus === 'orange' && <span className="bg-orange-100 text-orange-700 text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 pulse-orange"><Icons.AlertTriangle /> In Arrivo</span>}
+                                    <div className="flex items-center gap-3 mb-1">
+                                        <h3 className="text-lg font-black text-stone-800 leading-tight group-hover:text-indigo-700 transition-colors truncate">{c.name}</h3>
+                                        {c.churnStatus === 'red' && <span className="bg-rose-100 text-rose-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 pulse-red"><Icons.AlertTriangle /> Scaduto</span>}
+                                        {c.churnStatus === 'orange' && <span className="bg-orange-100 text-orange-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 pulse-orange"><Icons.AlertTriangle /> In Arrivo</span>}
                                     </div>
-                                    <p className="text-xs text-stone-500 font-medium flex items-center flex-wrap gap-1.5">
+                                    <p className="text-xs text-stone-500 font-bold uppercase tracking-tight flex items-center flex-wrap gap-2">
                                         {c.city} 
                                         <span className="text-stone-300">•</span> 
-                                        <span className={`font-semibold ${c.churnStatus === 'red' ? 'text-rose-600' : c.churnStatus === 'orange' ? 'text-orange-600' : 'text-stone-700'}`}>€{c.totalValue.toLocaleString()}</span> 
-                                        {!c.isMyAgent && <span className="text-[9px] uppercase bg-stone-100 px-1.5 py-0.5 rounded text-stone-500 border border-stone-200">Assegnato: {c.agenteAssegnato}</span>}
-                                        {isProspect && <span className="text-[9px] uppercase font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 rounded shadow-sm">Prospect</span>}
+                                        <span className={`font-extrabold ${c.churnStatus === 'red' ? 'text-rose-600' : c.churnStatus === 'orange' ? 'text-orange-600' : 'text-indigo-600'}`}>€{c.totalValue.toLocaleString()}</span> 
+                                        {!c.isMyAgent && <span className="text-[9px] bg-stone-100 px-2 py-1 rounded-md text-stone-500 border border-stone-200">Assegnato: {c.agenteAssegnato}</span>}
+                                        {isProspect && <span className="text-[9px] text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-1 rounded-md shadow-sm">PROSPECT</span>}
                                     </p>
                                 </div>
                                 
-                                <div className="flex items-center justify-end gap-4 mt-2 md:mt-0 shrink-0">
+                                <div className="flex items-center justify-end gap-5 shrink-0">
                                     {c.crossSellSuggestion && c.churnStatus !== 'red' && !isRoutingContext && (
-                                        <div className="hidden md:block text-right mr-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                                            <p className="text-[9px] uppercase font-bold text-indigo-500 tracking-wider flex items-center justify-end gap-1"><Icons.Sparkles /> Cross-Sell</p>
-                                            <p className="text-[11px] font-bold text-indigo-700">{c.crossSellSuggestion.brand}</p>
+                                        <div className="hidden lg:block text-right mr-2 opacity-60 group-hover:opacity-100 transition-opacity bg-indigo-50/50 p-2 rounded-xl border border-indigo-50">
+                                            <p className="text-[9px] uppercase font-black text-indigo-400 tracking-widest flex items-center justify-end gap-1 mb-0.5"><Icons.Sparkles /> Target AI</p>
+                                            <p className="text-[11px] font-extrabold text-indigo-700">{c.crossSellSuggestion.brand}</p>
                                         </div>
                                     )}
 
                                     {c.isChurnRisk && !isRoutingContext && (
                                         <div className="hidden md:block text-right mr-2">
-                                            <p className={`text-[9px] uppercase font-bold tracking-wider ${c.churnStatus === 'red' ? 'text-rose-400' : 'text-orange-400'}`}>Storico {previousSeasonAnalogous}</p>
-                                            <p className={`text-sm font-bold ${c.churnStatus === 'red' ? 'text-rose-600' : 'text-orange-600'}`}>-€{c.previousSeasonValue.toLocaleString()}</p>
+                                            <p className={`text-[9px] uppercase font-black tracking-widest mb-0.5 ${c.churnStatus === 'red' ? 'text-rose-400' : 'text-orange-400'}`}>Mancato Incasso</p>
+                                            <p className={`text-sm font-extrabold ${c.churnStatus === 'red' ? 'text-rose-600' : 'text-orange-600'}`}>-€{c.previousSeasonValue.toLocaleString()}</p>
                                         </div>
                                     )}
-                                    {c.lastUpdatedBy && c.lastUpdatedBy !== user?.uid && <span className="text-[9px] uppercase font-bold text-indigo-400 border border-indigo-200 px-1.5 py-0.5 rounded bg-indigo-50 shadow-sm" title="Modificato da un collega">Team</span>}
-                                    {isAlert && !c.isChurnRisk && <span className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold border border-amber-200 shadow-sm">Recall +{daysPassed}g</span>}
+                                    {c.lastUpdatedBy && c.lastUpdatedBy !== user?.uid && <span className="text-[9px] uppercase font-black text-indigo-400 border border-indigo-200 px-2 py-1 rounded-lg bg-indigo-50 shadow-sm" title="Aggiornato dal Team">Team</span>}
+                                    {isAlert && !c.isChurnRisk && <span className="bg-amber-100 text-amber-700 px-2 py-1 rounded-lg text-[10px] font-black border border-amber-200 shadow-sm">Recall +{daysPassed}g</span>}
                                     
-                                    <div className={`p-2.5 rounded-xl transition-all shadow-sm ${c.churnStatus === 'red' ? 'bg-rose-100 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' : c.churnStatus === 'orange' ? 'bg-orange-100 text-orange-600 group-hover:bg-orange-600 group-hover:text-white' : 'bg-stone-50 text-stone-500 border border-stone-200 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600'}`}>
+                                    <div className={`p-3.5 rounded-2xl transition-all shadow-inner ${c.churnStatus === 'red' ? 'bg-rose-100 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' : c.churnStatus === 'orange' ? 'bg-orange-100 text-orange-600 group-hover:bg-orange-600 group-hover:text-white' : 'bg-stone-50 text-stone-300 border border-stone-200 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600'}`}>
                                         <Icons.Phone />
                                     </div>
                                 </div>
@@ -732,86 +561,60 @@
             };
 
             return (
-                <div className="min-h-screen flex flex-col pb-10 bg-stone-50 bg-pattern">
-                    <div className="bg-stone-900 text-stone-300 px-4 py-2 flex justify-between items-center text-[10px] font-semibold tracking-widest uppercase z-50 sticky top-0 overflow-x-auto custom-scrollbar shadow-md">
-                        <div className="flex gap-4 items-center shrink-0">
-                            <span className="flex items-center gap-2"><div className={`w-2 h-2 rounded-full ${dbStatus === 'Online e Protetto' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}></div> {dbStatus}</span>
+                <div className="min-h-screen flex flex-col bg-stone-50 bg-pattern pb-12">
+                    <nav className="bg-stone-900 text-stone-400 px-6 py-3.5 flex justify-between items-center text-[10px] font-black uppercase tracking-widest sticky top-0 z-50 shadow-xl overflow-x-auto">
+                        <div className="flex gap-6 items-center shrink-0">
+                            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div> System: {dbStatus}</span>
                         </div>
-                        <div className="flex gap-6 shrink-0 ml-4 items-center">
-                            <button onClick={() => setActiveView('call-list')} className={`hover:text-white transition-all flex items-center gap-1.5 ${activeView === 'call-list' ? 'text-white border-b-2 border-indigo-500 pb-0.5' : ''}`}>
-                                Agenda ({processedClients.main.length})
-                            </button>
-                            <button onClick={() => setActiveView('historical')} className={`hover:text-white transition-all flex items-center gap-1.5 ${activeView === 'historical' ? 'text-white border-b-2 border-indigo-500 pb-0.5' : ''}`}>
-                                Storica ({processedClients.historical.length})
-                            </button>
-                            <button onClick={() => setActiveView('routing')} className={`hover:text-white transition-all flex items-center gap-1.5 ${activeView === 'routing' ? 'text-emerald-300 border-b-2 border-emerald-500 pb-0.5' : 'text-emerald-500'}`}>
-                                <Icons.Map /> Routing
-                            </button>
-                            <button onClick={() => setActiveView('scouting')} className={`hover:text-white transition-all flex items-center gap-1.5 ${activeView === 'scouting' ? 'text-purple-300 border-b-2 border-purple-500 pb-0.5' : 'text-purple-500'}`}>
-                                <Icons.Target /> AI Radar
-                            </button>
-                            <button onClick={handleLogout} className="ml-4 hover:text-white text-stone-500 transition-all flex items-center gap-1 border border-stone-700 px-2 py-1 rounded bg-stone-800" title="Disconnetti in Sicurezza">
-                                <Icons.LogOut /> Esci
-                            </button>
+                        <div className="flex gap-8 items-center shrink-0 ml-4 font-bold">
+                            <button onClick={() => setActiveView('call-list')} className={`hover:text-white transition-all ${activeView === 'call-list' ? 'text-white border-b-2 border-white pb-1' : ''}`}>Workspace</button>
+                            <button onClick={() => setActiveView('routing')} className={`hover:text-emerald-300 transition-all flex items-center gap-1.5 ${activeView === 'routing' ? 'text-emerald-400 border-b-2 border-emerald-400 pb-1' : ''}`}><Icons.Map /> Routing</button>
+                            <button onClick={() => setActiveView('historical')} className={`hover:text-white transition-all flex items-center gap-1.5 ${activeView === 'historical' ? 'text-white border-b-2 border-white pb-1' : ''}`}><Icons.Archive /> Storico</button>
+                            <button onClick={() => setActiveView('scouting')} className={`hover:text-purple-300 transition-all flex items-center gap-1.5 ${activeView === 'scouting' ? 'text-purple-400 border-b-2 border-purple-400 pb-1' : ''}`}><Icons.Target /> AI Radar</button>
+                            <button onClick={() => window.FirebaseOps.signOut(window.FirebaseOps.auth)} className="hover:text-rose-400 transition-colors flex items-center gap-1.5 ml-2 border border-stone-700 bg-stone-800 px-3 py-1.5 rounded-lg"><Icons.LogOut /> Esci</button>
                         </div>
-                    </div>
+                    </nav>
 
-                    <div className="max-w-4xl mx-auto px-4 py-8 w-full space-y-6">
+                    <div className="max-w-5xl mx-auto px-4 py-8 w-full space-y-6">
                         
+                        {/* VISTA: AI RADAR SCOUTING */}
                         {activeView === 'scouting' && (
                             <div className="space-y-6 fade-in">
-                                <header className="bg-gradient-to-br from-purple-800 to-indigo-950 p-6 md:p-8 rounded-[2rem] shadow-xl text-white relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-8 opacity-10 hidden md:block">
-                                        <Icons.Target />
-                                    </div>
+                                <header className="bg-gradient-to-br from-purple-800 to-indigo-950 p-8 md:p-10 rounded-[3rem] shadow-2xl text-white relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-10 opacity-10 hidden md:block pointer-events-none transform scale-150"><Icons.Target /></div>
                                     <div className="max-w-2xl relative z-10">
-                                        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-3 flex items-center gap-3"><Icons.Target /> AI Lead Scoring</h2>
-                                        <p className="text-purple-200/90 text-sm mb-8 font-medium leading-relaxed">Genera un database di prospect valutando l'affinità con i nostri brand. L'AI scandaglia la rete per estrarre fino a 40 attività in zona.</p>
+                                        <p className="text-[10px] font-black text-purple-300 uppercase tracking-[0.3em] mb-3">Modulo di Espansione</p>
+                                        <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter">AI Lead Scoring</h2>
+                                        <p className="text-purple-200/80 text-sm mb-8 font-semibold leading-relaxed">L'intelligenza artificiale scansiona il territorio in tempo reale per individuare i migliori prospect multimarca, incrociando i dati con il nostro portfolio brand.</p>
                                         
-                                        <div className="flex flex-col md:flex-row gap-3 w-full">
-                                            <div className="relative flex-1">
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="Inserisci una zona (es. Crema, Desenzano...)" 
-                                                    className="w-full pl-5 pr-4 py-4 bg-white/10 border border-purple-400/30 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300 focus:bg-white/20 font-semibold text-white transition-all placeholder:text-purple-200/50 text-sm backdrop-blur-md shadow-inner"
-                                                    value={scoutCity}
-                                                    onChange={(e) => setScoutCity(e.target.value)}
-                                                />
-                                            </div>
-                                            <button 
-                                                onClick={handleScouting}
-                                                disabled={isScouting}
-                                                className="bg-purple-500 hover:bg-purple-400 text-white px-8 py-4 rounded-2xl font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                                            >
-                                                {isScouting ? 'Estrazione dati in corso...' : <><Icons.Sparkles /> Genera Database</>}
+                                        <div className="flex flex-col md:flex-row gap-4 w-full">
+                                            <input type="text" placeholder="Es: Milano centro, Brescia, Verona..." className="flex-1 p-5 bg-white/10 border border-purple-400/30 rounded-[1.5rem] text-white outline-none focus:bg-white/20 transition-all font-bold placeholder:text-purple-300/40 shadow-inner backdrop-blur-md" value={scoutCity} onChange={e => setScoutCity(e.target.value)} />
+                                            <button onClick={handleScouting} disabled={isScouting} className="bg-purple-500 px-10 py-5 rounded-[1.5rem] font-black hover:bg-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all uppercase text-[11px] tracking-widest disabled:opacity-50 flex items-center justify-center gap-2">
+                                                {isScouting ? <><Icons.Zap className="animate-spin" /> Analisi in corso...</> : <><Icons.Sparkles /> Avvia Scansione</>}
                                             </button>
                                         </div>
                                     </div>
                                 </header>
 
                                 {scoutResults.length > 0 && (
-                                    <div className="flex flex-col gap-4">
-                                        {scoutResults.map((lead, i) => (
-                                            <div key={i} className="bg-white rounded-2xl p-5 border border-stone-200 shadow-sm hover:border-purple-300 transition-colors flex flex-col md:flex-row justify-between md:items-center gap-4">
+                                    <div className="flex flex-col gap-4 mt-8">
+                                        <h3 className="text-sm font-black text-stone-400 uppercase tracking-widest mb-2 px-2 flex items-center gap-2"><Icons.Target/> {scoutResults.length} Prospect Individuati</h3>
+                                        {scoutResults.map((r, i) => (
+                                            <div key={i} className="bg-white rounded-[2.5rem] p-6 md:p-8 border border-stone-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-6 group hover:border-purple-300 hover:shadow-lg transition-all modal-fade-in" style={{animationDelay: `${i * 0.05}s`}}>
                                                 <div className="flex-1">
-                                                    <div className="flex items-center gap-3 mb-2">
-                                                        <div className={`px-3 py-1 rounded-md text-xs font-black ${lead.score >= 80 ? 'bg-emerald-100 text-emerald-700' : lead.score >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-500'}`}>
-                                                            {lead.score}/100
-                                                        </div>
-                                                        <h3 className="font-bold text-xl text-stone-800">{lead.name}</h3>
+                                                    <div className="flex items-center gap-4 mb-2">
+                                                        <span className={`text-[11px] font-black px-3 py-1 rounded-lg ${r.score >= 80 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{r.score} Punti</span>
+                                                        <h3 className="font-black text-2xl text-stone-800 tracking-tight">{r.name}</h3>
                                                     </div>
-                                                    <p className="text-sm text-stone-500 mb-3">{lead.address} • <span className="font-semibold">{lead.phone}</span></p>
+                                                    <p className="text-sm text-stone-500 font-bold mb-4">{r.address} • <span className="text-stone-800">{r.phone}</span></p>
                                                     
-                                                    <div className="bg-stone-50 p-3.5 rounded-xl border border-stone-200 space-y-2">
-                                                        <p className="text-sm text-stone-700"><b className="text-stone-400 uppercase text-[10px] tracking-wider mr-2">Motivazione</b> {lead.reason}</p>
-                                                        <p className="text-sm text-purple-700 bg-purple-50 p-2 rounded-lg inline-flex items-center gap-1.5 font-bold border border-purple-100"><Icons.Sparkles className="w-3 h-3"/> Gancio Consigliato: {lead.suggested_brand}</p>
+                                                    <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 space-y-2">
+                                                        <p className="text-sm text-stone-700 font-medium italic">"{r.reason}"</p>
+                                                        <p className="text-[10px] text-purple-600 font-black uppercase tracking-widest flex items-center gap-1.5"><Icons.Sparkles className="w-3 h-3"/> Gancio ideale: {r.suggested_brand}</p>
                                                     </div>
                                                 </div>
-                                                <button 
-                                                    onClick={() => handleSaveScoutLead(lead)}
-                                                    className="w-full md:w-auto bg-stone-900 text-white font-bold text-sm px-6 py-4 rounded-xl hover:bg-emerald-600 transition-all flex justify-center items-center gap-2 shadow-md shrink-0"
-                                                >
-                                                    <Icons.Plus /> Salva in Agenda
+                                                <button onClick={() => handleSaveScoutLead(r)} className="w-full md:w-auto p-5 bg-stone-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-emerald-500 transition-colors shadow-xl flex items-center justify-center gap-2 shrink-0">
+                                                    <Icons.Plus /> Aggiungi ad Agenda
                                                 </button>
                                             </div>
                                         ))}
@@ -820,36 +623,31 @@
                             </div>
                         )}
 
+                        {/* VISTA: ROUTING (TRASFERTE) */}
                         {activeView === 'routing' && (
                             <div className="space-y-6 fade-in">
-                                <header className="bg-gradient-to-br from-emerald-800 to-teal-950 p-6 md:p-8 rounded-[2rem] shadow-xl text-white relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-8 opacity-10 hidden md:block">
-                                        <Icons.Map />
-                                    </div>
+                                <header className="bg-gradient-to-br from-emerald-800 to-teal-950 p-8 md:p-10 rounded-[3rem] shadow-2xl text-white relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-10 opacity-10 hidden md:block pointer-events-none transform scale-150"><Icons.Map /></div>
                                     <div className="max-w-2xl relative z-10">
-                                        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-3 flex items-center gap-3"><Icons.Map /> Pianificatore Trasferte</h2>
-                                        <p className="text-emerald-100/90 text-sm mb-8 font-medium leading-relaxed">Inserisci la città di destinazione. L'algoritmo raggrupperà i clienti per urgenza d'intervento.</p>
+                                        <p className="text-[10px] font-black text-emerald-300 uppercase tracking-[0.3em] mb-3">Modulo Logistico</p>
+                                        <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter">Pianificatore Trasferte</h2>
+                                        <p className="text-emerald-100/80 text-sm mb-8 font-semibold leading-relaxed">Inserisci la città che intendi visitare. Il sistema calcolerà le priorità d'intervento raggruppando i clienti per rischio di abbandono e opportunità commerciali.</p>
                                         
                                         <div className="relative w-full">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Es. Brescia, Bergamo, Mantova..." 
-                                                className="w-full pl-5 pr-4 py-4 bg-white/10 border border-emerald-400/30 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-300 focus:bg-white/20 font-semibold text-white transition-all placeholder:text-emerald-200/50 text-sm backdrop-blur-md shadow-inner"
-                                                value={routingCity}
-                                                onChange={(e) => setRoutingCity(e.target.value)}
-                                            />
+                                            <input type="text" placeholder="Città di destinazione (es: Bergamo)..." className="w-full p-5 pl-14 bg-white/10 border border-emerald-400/30 rounded-[1.5rem] text-white outline-none focus:bg-white/20 transition-all font-bold placeholder:text-emerald-200/40 shadow-inner backdrop-blur-md" value={routingCity} onChange={(e) => setRoutingCity(e.target.value)} />
+                                            <Icons.Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-300" />
                                         </div>
                                     </div>
                                 </header>
 
                                 {routingCity.length > 2 && (
-                                    <div className="space-y-8">
+                                    <div className="space-y-10 mt-8">
                                         {processedClients.routingResults.urgent.length > 0 && (
                                             <div className="space-y-4">
-                                                <h3 className="text-sm font-bold text-rose-600 uppercase tracking-widest flex items-center gap-2 border-b-2 border-rose-200 pb-2">
-                                                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500 pulse-red"></span> Priorità Massima
+                                                <h3 className="text-[11px] font-black text-rose-600 uppercase tracking-widest flex items-center gap-2 border-b-2 border-rose-200 pb-3 pl-2">
+                                                    <span className="w-3 h-3 rounded-full bg-rose-500 pulse-red"></span> Urgenza Massima (Rischio Churn)
                                                 </h3>
-                                                <div className="flex flex-col gap-3">
+                                                <div className="grid grid-cols-1 gap-3">
                                                     {processedClients.routingResults.urgent.map((c, i) => renderClientCard(c, `urg-${i}`, true))}
                                                 </div>
                                             </div>
@@ -857,10 +655,10 @@
                                         
                                         {processedClients.routingResults.prospect.length > 0 && (
                                             <div className="space-y-4">
-                                                <h3 className="text-sm font-bold text-indigo-600 uppercase tracking-widest flex items-center gap-2 border-b-2 border-indigo-200 pb-2">
-                                                    <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Opportunità / Prospect
+                                                <h3 className="text-[11px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2 border-b-2 border-indigo-200 pb-3 pl-2">
+                                                    <span className="w-3 h-3 rounded-full bg-indigo-500"></span> Opportunità Commerciali / Prospect
                                                 </h3>
-                                                <div className="flex flex-col gap-3 opacity-90">
+                                                <div className="grid grid-cols-1 gap-3 opacity-95">
                                                     {processedClients.routingResults.prospect.map((c, i) => renderClientCard(c, `prosp-${i}`, true))}
                                                 </div>
                                             </div>
@@ -868,17 +666,17 @@
 
                                         {processedClients.routingResults.active.length > 0 && (
                                             <div className="space-y-4">
-                                                <h3 className="text-sm font-bold text-stone-500 uppercase tracking-widest flex items-center gap-2 border-b-2 border-stone-200 pb-2">
-                                                    <span className="w-2.5 h-2.5 rounded-full bg-stone-400"></span> Visita Cortesia
+                                                <h3 className="text-[11px] font-black text-stone-500 uppercase tracking-widest flex items-center gap-2 border-b-2 border-stone-200 pb-3 pl-2">
+                                                    <span className="w-3 h-3 rounded-full bg-stone-400"></span> Clienti Coperti (Visita di Cortesia)
                                                 </h3>
-                                                <div className="flex flex-col gap-3 opacity-70 hover:opacity-100 transition-opacity">
+                                                <div className="grid grid-cols-1 gap-3 opacity-80 hover:opacity-100 transition-opacity">
                                                     {processedClients.routingResults.active.map((c, i) => renderClientCard(c, `act-${i}`, true))}
                                                 </div>
                                             </div>
                                         )}
 
                                         {processedClients.routingResults.urgent.length === 0 && processedClients.routingResults.prospect.length === 0 && processedClients.routingResults.active.length === 0 && (
-                                            <div className="text-center p-12 bg-white rounded-2xl border border-stone-200 text-stone-500 text-base font-medium shadow-sm">
+                                            <div className="text-center p-16 bg-white rounded-[3rem] border border-stone-200 text-stone-400 text-lg font-bold shadow-sm">
                                                 Nessun risultato trovato in zona "{routingCity}".
                                             </div>
                                         )}
@@ -887,68 +685,48 @@
                             </div>
                         )}
 
+                        {/* VISTA: WORKSPACE (AGENDA E STORICO) */}
                         {(activeView === 'call-list' || activeView === 'historical') && (
-                            <div className="space-y-6">
-                                <header className={`p-6 md:p-8 rounded-[2rem] shadow-lg border relative overflow-hidden fade-in ${activeView === 'call-list' ? 'bg-gradient-to-br from-slate-900 to-indigo-950 border-indigo-900/50 text-white' : 'bg-gradient-to-br from-stone-50 to-white border-stone-200 text-stone-800'}`}>
-                                    {activeView === 'call-list' && (
-                                        <div className="absolute top-0 right-0 -mt-10 -mr-10 opacity-5 pointer-events-none">
-                                            <Icons.Zap className="w-64 h-64" />
-                                        </div>
-                                    )}
+                            <div className="space-y-6 fade-in">
+                                <header className={`p-8 md:p-10 rounded-[3rem] shadow-2xl relative overflow-hidden fade-in ${activeView === 'call-list' ? 'bg-slate-900 border-indigo-900/50 text-white' : 'bg-gradient-to-br from-stone-50 to-white border border-stone-200 text-stone-800'}`}>
+                                    {activeView === 'call-list' && <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none font-black text-[12rem] leading-none transform translate-x-10 -translate-y-10">L'O</div>}
+                                    
                                     <div className="flex flex-col lg:flex-row justify-between lg:items-end gap-6 relative z-10">
-                                        <div className="flex items-center gap-5">
-                                            <div className={`p-4 rounded-2xl shrink-0 shadow-inner border backdrop-blur-md ${activeView === 'call-list' ? 'bg-white/10 border-white/20 text-indigo-300' : 'bg-stone-200/50 border-stone-300 text-stone-500'}`}>
-                                                {activeView === 'call-list' ? <Icons.Zap /> : <Icons.Archive />}
+                                        <div className="flex items-center gap-6">
+                                            <div className={`p-5 rounded-[2rem] shrink-0 shadow-inner border backdrop-blur-md ${activeView === 'call-list' ? 'bg-white/10 border-white/20 text-indigo-300' : 'bg-stone-200/50 border-stone-300 text-stone-500'}`}>
+                                                {activeView === 'call-list' ? <Icons.Zap className="w-8 h-8" /> : <Icons.Archive className="w-8 h-8" />}
                                             </div>
                                             <div>
-                                                <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${activeView === 'call-list' ? 'text-indigo-300' : 'text-stone-400'}`}>
-                                                    {activeView === 'call-list' ? 'Workspace Attivo' : 'Archivio Prospect'}
+                                                <p className={`text-[11px] font-black uppercase tracking-[0.3em] mb-2 ${activeView === 'call-list' ? 'text-indigo-400' : 'text-stone-400'}`}>
+                                                    {activeView === 'call-list' ? 'Sales Workspace' : 'Archivio Prospect Inattivi'}
                                                 </p>
-                                                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight flex items-center gap-2 mb-3">
-                                                    {activeView === 'call-list' ? 'Agenda Principale' : 'Agenda Storica'}
+                                                <h1 className="text-4xl md:text-5xl font-black tracking-tighter flex items-center gap-3 mb-4">
+                                                    Agenda <span className={activeView === 'call-list' ? 'text-indigo-400' : 'text-stone-400'}>{targetSeason.replace('_', ' ')}</span>
                                                 </h1>
-                                                <div className="flex flex-wrap items-center gap-3">
-                                                    <div className="relative">
-                                                        <select 
-                                                            value={targetSeason}
-                                                            onChange={(e) => setTargetSeason(e.target.value)}
-                                                            className={`text-sm font-bold rounded-lg py-1.5 px-3 pr-8 outline-none cursor-pointer appearance-none transition-colors border shadow-sm ${activeView === 'call-list' ? 'bg-indigo-900/50 border-indigo-700 text-indigo-200 hover:bg-indigo-800/80' : 'bg-white border-stone-200 text-indigo-600 hover:bg-stone-50'}`}
-                                                        >
-                                                            {availableSeasons.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
-                                                        </select>
-                                                        <Icons.ChevronDown className={`absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none ${activeView === 'call-list' ? 'text-indigo-300' : 'text-indigo-600'}`} />
-                                                    </div>
-                                                    <span className={`text-xs font-bold px-3 py-1.5 rounded-lg border flex items-center gap-1.5 ${activeView === 'call-list' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-stone-100 border-stone-200 text-stone-500'}`}>
-                                                        <div className={`w-1.5 h-1.5 rounded-full ${activeView === 'call-list' ? 'bg-emerald-400 animate-pulse' : 'bg-stone-400'}`}></div>
-                                                        Valore: €{totalListValue.toLocaleString()}
+                                                <div className="flex flex-wrap items-center gap-4">
+                                                    <span className={`text-xs font-black px-4 py-2 rounded-xl border flex items-center gap-2 ${activeView === 'call-list' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-stone-100 border-stone-200 text-stone-500'}`}>
+                                                        <div className={`w-2 h-2 rounded-full ${activeView === 'call-list' ? 'bg-emerald-400 animate-pulse' : 'bg-stone-400'}`}></div>
+                                                        Potenziale: €{totalListValue.toLocaleString()}
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="flex w-full lg:w-auto gap-3 items-center">
-                                            <div className={`flex flex-1 lg:w-80 items-center border rounded-xl px-4 py-3 focus-within:ring-2 transition-all shadow-inner ${activeView === 'call-list' ? 'bg-slate-800/50 border-slate-700 focus-within:ring-indigo-500/50 focus-within:border-indigo-400' : 'bg-stone-50 border-stone-200 focus-within:ring-indigo-100 focus-within:border-indigo-400'}`}>
-                                                <Icons.Search className={`w-4 h-4 mr-2 shrink-0 ${activeView === 'call-list' ? 'text-slate-400' : 'text-stone-400'}`} />
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="Cerca cliente, brand..." 
-                                                    className={`w-full bg-transparent border-none outline-none font-semibold text-sm ${activeView === 'call-list' ? 'text-white placeholder:text-slate-400' : 'text-stone-800 placeholder:text-stone-400'}`}
-                                                    value={searchTerm}
-                                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                                />
+                                            <div className={`flex flex-1 lg:w-80 items-center border rounded-2xl px-5 py-4 focus-within:ring-2 transition-all shadow-inner ${activeView === 'call-list' ? 'bg-slate-800/80 border-slate-700 focus-within:ring-indigo-500/50 focus-within:border-indigo-400' : 'bg-stone-50 border-stone-200 focus-within:ring-indigo-100 focus-within:border-indigo-400'}`}>
+                                                <Icons.Search className={`w-5 h-5 mr-3 shrink-0 ${activeView === 'call-list' ? 'text-slate-400' : 'text-stone-400'}`} />
+                                                <input type="text" placeholder="Filtra cliente, città, marchio..." className={`w-full bg-transparent border-none outline-none font-bold text-sm ${activeView === 'call-list' ? 'text-white placeholder:text-slate-500' : 'text-stone-800 placeholder:text-stone-400'}`} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                                             </div>
-                                            <button 
-                                                onClick={() => setShowAddModal(true)}
-                                                className={`px-4 py-3 rounded-xl transition-all shadow-md flex items-center justify-center shrink-0 ${activeView === 'call-list' ? 'bg-indigo-500 hover:bg-indigo-400 text-white' : 'bg-stone-900 hover:bg-indigo-600 text-white'}`}
-                                                title="Aggiungi Nuovo Prospect"
-                                            >
-                                                <Icons.Plus />
-                                            </button>
+                                            <select className={`p-4 rounded-2xl text-sm font-black outline-none cursor-pointer border shadow-md ${activeView === 'call-list' ? 'bg-slate-800 border-slate-700 text-indigo-300 hover:bg-slate-700' : 'bg-white border-stone-200 text-indigo-600 hover:bg-stone-50'}`} value={targetSeason} onChange={e => setTargetSeason(e.target.value)}>
+                                                <option value="PE_27">PE 27</option>
+                                                <option value="AI_27">AI 27</option>
+                                            </select>
+                                            <button onClick={() => setShowAddModal(true)} className={`px-5 py-4 rounded-2xl transition-all shadow-lg flex items-center justify-center shrink-0 ${activeView === 'call-list' ? 'bg-indigo-500 hover:bg-indigo-400 text-white' : 'bg-stone-900 hover:bg-indigo-600 text-white'}`} title="Aggiungi Nuovo Prospect Manualmente"><Icons.Plus /></button>
                                         </div>
                                     </div>
                                 </header>
 
-                                <div className="flex flex-col gap-3">
+                                <div className="grid grid-cols-1 gap-3 mt-4">
                                     {activeView === 'call-list' 
                                         ? processedClients.main.map((c, idx) => renderClientCard(c, idx))
                                         : processedClients.historical.map((c, idx) => renderClientCard(c, idx))
@@ -956,168 +734,136 @@
                                 </div>
                                 
                                 {activeView === 'call-list' && processedClients.main.length === 0 && (
-                                    <div className="text-center p-12 bg-white rounded-2xl border border-stone-200 text-stone-500 text-base font-medium shadow-sm">Nessun cliente attivo trovato. Prova a controllare l'Agenda Storica.</div>
+                                    <div className="text-center p-16 bg-white rounded-[3rem] border border-stone-200 text-stone-400 text-lg font-bold shadow-sm mt-8">Nessun cliente attivo trovato. Prova a controllare l'Archivio Storico.</div>
                                 )}
                                 {activeView === 'historical' && processedClients.historical.length === 0 && (
-                                    <div className="text-center p-12 bg-white rounded-2xl border border-stone-200 text-stone-500 text-base font-medium shadow-sm">Nessun dato storico trovato.</div>
+                                    <div className="text-center p-16 bg-white rounded-[3rem] border border-stone-200 text-stone-400 text-lg font-bold shadow-sm mt-8">Nessun dato storico trovato per questi filtri.</div>
                                 )}
                             </div>
                         )}
                     </div>
 
+                    {/* MODALE: AGGIUNGI PROSPECT MANUALE */}
                     {showAddModal && (
-                        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-3">
-                            <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 modal-fade-in border border-stone-200">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h3 className="text-xl font-bold text-stone-800">Nuovo Prospect</h3>
-                                    <button onClick={() => setShowAddModal(false)} className="text-stone-400 hover:text-rose-500 transition-colors p-1 bg-stone-50 rounded-lg"><Icons.X /></button>
+                        <div className="fixed inset-0 bg-stone-900/80 backdrop-blur-md z-[200] flex items-center justify-center p-4">
+                            <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-8 md:p-10 modal-fade-in border border-stone-200">
+                                <div className="flex justify-between items-center mb-8">
+                                    <h3 className="text-2xl font-black text-stone-800 tracking-tighter">Nuovo Prospect</h3>
+                                    <button onClick={() => setShowAddModal(false)} className="text-stone-400 hover:text-rose-500 transition-colors p-2 bg-stone-50 rounded-xl"><Icons.X /></button>
                                 </div>
-                                <form onSubmit={handleAddNewClient} className="space-y-5">
+                                <form onSubmit={handleAddNewClient} className="space-y-6">
                                     <div>
-                                        <label className="block text-[11px] font-black text-stone-400 uppercase mb-2 tracking-wider">Ragione Sociale</label>
-                                        <input required type="text" className="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm font-semibold outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50" 
-                                            value={newClientData.name} onChange={e => setNewClientData({...newClientData, name: e.target.value})} placeholder="Es. Boutique Rossi" />
+                                        <label className="block text-[11px] font-black text-stone-400 uppercase mb-2 tracking-widest pl-2">Ragione Sociale</label>
+                                        <input required type="text" className="w-full p-4 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-bold outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 shadow-inner" value={newClientData.name} onChange={e => setNewClientData({...newClientData, name: e.target.value})} placeholder="Es. Boutique Rossi" />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-[11px] font-black text-stone-400 uppercase mb-2 tracking-wider">Città</label>
-                                            <input type="text" className="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm font-semibold outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50" 
-                                                value={newClientData.city} onChange={e => setNewClientData({...newClientData, city: e.target.value})} placeholder="Città" />
+                                            <label className="block text-[11px] font-black text-stone-400 uppercase mb-2 tracking-widest pl-2">Città</label>
+                                            <input type="text" className="w-full p-4 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-bold outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 shadow-inner" value={newClientData.city} onChange={e => setNewClientData({...newClientData, city: e.target.value})} placeholder="Es. Milano" />
                                         </div>
                                         <div>
-                                            <label className="block text-[11px] font-black text-stone-400 uppercase mb-2 tracking-wider">Telefono</label>
-                                            <input type="text" className="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm font-semibold outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50" 
-                                                value={newClientData.phone} onChange={e => setNewClientData({...newClientData, phone: e.target.value})} placeholder="Telefono" />
+                                            <label className="block text-[11px] font-black text-stone-400 uppercase mb-2 tracking-widest pl-2">Telefono</label>
+                                            <input type="text" className="w-full p-4 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-bold outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 shadow-inner" value={newClientData.phone} onChange={e => setNewClientData({...newClientData, phone: e.target.value})} placeholder="Es. 02 123456" />
                                         </div>
                                     </div>
-                                    <button type="submit" className="w-full mt-4 bg-indigo-600 text-white font-bold text-sm p-4 rounded-xl shadow-md hover:bg-indigo-700 transition-all flex justify-center">
-                                        Salva Prospect
+                                    <button type="submit" className="w-full mt-6 bg-indigo-600 text-white font-black text-sm uppercase tracking-widest p-5 rounded-2xl shadow-xl hover:bg-indigo-500 transition-all flex justify-center">
+                                        Salva nel Database
                                     </button>
                                 </form>
                             </div>
                         </div>
                     )}
 
+                    {/* MODALE: DETTAGLIO CLIENTE */}
                     {selectedClient && (
-                        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-3 overflow-y-auto">
-                            <div className="bg-white w-full max-w-4xl rounded-[2rem] shadow-2xl overflow-hidden modal-fade-in border border-stone-200 my-auto flex flex-col max-h-[90vh]">
-                                <div className="p-5 md:p-6 bg-stone-50 border-b border-stone-200 flex justify-between items-start">
-                                    <div className="space-y-1.5">
-                                        <div className="flex items-center gap-3">
-                                            <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800 tracking-tight">{selectedClient.name}</h2>
-                                            <button 
-                                                onClick={(e) => { e.stopPropagation(); setShowChart(selectedClient); }}
-                                                className="p-2 bg-white text-indigo-600 rounded-xl shadow-sm border border-stone-200 hover:border-indigo-300 hover:bg-indigo-50 transition-colors"
-                                            >
-                                                <Icons.Chart />
-                                            </button>
+                        <div className="fixed inset-0 bg-stone-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-3 md:p-6 overflow-y-auto">
+                            <div className="bg-white w-full max-w-5xl rounded-[3rem] shadow-2xl overflow-hidden modal-fade-in my-auto max-h-[95vh] flex flex-col border border-stone-200 relative">
+                                <div className="p-8 border-b border-stone-100 flex justify-between items-start bg-stone-50/50">
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-500 flex items-center justify-center hidden sm:flex shadow-inner">
+                                            <Icons.Notebook className="w-8 h-8" />
                                         </div>
-                                        <div className="text-stone-500 font-semibold text-xs flex items-center gap-2">
-                                            {selectedClient.city} <span className="text-stone-300">•</span> <span className="text-indigo-600">{selectedClient.phone || selectedClient.mobile}</span>
+                                        <div>
+                                            <h2 className="text-4xl font-black text-stone-800 tracking-tighter leading-none mb-3">{selectedClient.name}</h2>
+                                            <p className="text-[11px] text-stone-500 font-black uppercase tracking-[0.2em] bg-white px-3 py-1.5 rounded-lg border border-stone-200 inline-block shadow-sm">
+                                                {selectedClient.city} • {selectedClient.phone || 'Nessun recapito'}
+                                            </p>
                                         </div>
+                                        <button onClick={() => setShowChart(selectedClient)} className="ml-4 p-4 bg-white text-indigo-600 rounded-2xl shadow-sm border border-stone-200 hover:border-indigo-500 hover:bg-indigo-50 transition-all group" title="Vedi Analisi di Crescita">
+                                            <Icons.Chart className="group-hover:scale-110 transition-transform" />
+                                        </button>
                                     </div>
-                                    <button onClick={() => setSelectedClient(null)} className="p-2 bg-white rounded-xl shadow-sm border border-stone-200 text-stone-400 hover:text-rose-500 transition-colors">
-                                        <Icons.X />
-                                    </button>
+                                    <button onClick={() => setSelectedClient(null)} className="p-3 bg-white rounded-2xl border border-stone-200 text-stone-400 hover:text-rose-500 transition-colors shadow-sm"><Icons.X /></button>
                                 </div>
-                                <div className="flex-1 overflow-y-auto p-5 md:p-6 custom-scrollbar">
-                                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                                        <div className="md:col-span-3 space-y-6">
-                                            
-                                            {selectedClient.crossSellSuggestion && (
-                                                <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-                                                    <div className="text-indigo-500 mt-0.5"><Icons.Sparkles /></div>
-                                                    <div>
-                                                        <p className="text-xs font-black text-indigo-700 uppercase mb-1 tracking-wider">AI Cross-Sell Opportunity: {selectedClient.crossSellSuggestion.brand}</p>
-                                                        <p className="text-sm text-indigo-600 leading-relaxed italic font-medium">
-                                                            "{selectedClient.crossSellSuggestion.pitch}"
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {selectedClient.churnStatus === 'red' && (
-                                                <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-                                                    <div className="text-rose-500 mt-0.5 pulse-red"><Icons.AlertTriangle /></div>
-                                                    <div>
-                                                        <p className="text-xs font-black text-rose-700 uppercase mb-1 tracking-wider">Campagna Chiusa / Scaduta</p>
-                                                        <p className="text-sm text-rose-600 leading-relaxed font-medium">
-                                                            Nella stagione passata ({previousSeasonAnalogous}), il cliente aveva ordinato per un totale di <b className="text-rose-800">€{selectedClient.previousSeasonValue.toLocaleString()}</b>. <br/>Siamo in ritardo sulla finestra temporale standard.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {selectedClient.churnStatus === 'orange' && (
-                                                <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-                                                    <div className="text-orange-500 mt-0.5 pulse-orange"><Icons.AlertTriangle /></div>
-                                                    <div>
-                                                        <p className="text-xs font-black text-orange-700 uppercase mb-1 tracking-wider">Campagna in Arrivo (Pre-Allarme)</p>
-                                                        <p className="text-sm text-orange-600 leading-relaxed font-medium">
-                                                            Il cliente ha speso <b className="text-orange-800">€{selectedClient.previousSeasonValue.toLocaleString()}</b> in {previousSeasonAnalogous}. <br/>Preparati a contattarlo, la stagione entra nel vivo.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            <div className="space-y-2.5">
-                                                <h4 className="text-[11px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                    <Icons.Notebook /> Annotazioni Rapide
-                                                </h4>
-                                                <textarea 
-                                                    className="w-full h-32 bg-stone-50 border border-stone-200 rounded-xl p-4 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all font-medium text-stone-700 text-sm resize-none shadow-inner"
-                                                    placeholder="Aggiungi dettagli o feedback..."
-                                                    value={selectedClient.notes}
-                                                    onChange={(e) => setSelectedClient({...selectedClient, notes: e.target.value})}
-                                                    onBlur={() => saveClientData(selectedClient.name, null, selectedClient.notes)}
-                                                />
+                                
+                                <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar bg-white">
+                                    {selectedClient.isChurnRisk && (
+                                        <div className={`p-6 rounded-[2rem] border flex items-center gap-5 shadow-sm ${selectedClient.churnStatus === 'red' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-orange-50 border-orange-200 text-orange-700'}`}>
+                                            <div className={`p-4 rounded-xl bg-white shadow-sm ${selectedClient.churnStatus === 'red' ? 'text-rose-500 pulse-red' : 'text-orange-500 pulse-orange'}`}><Icons.AlertTriangle className="w-8 h-8" /></div>
+                                            <div>
+                                                <p className="text-[11px] font-black uppercase tracking-[0.2em] mb-1">Rischio Churn Rilevato</p>
+                                                <p className="text-base font-bold leading-relaxed">Il cliente ha uno storico di <span className="font-black text-lg">€{selectedClient.previousSeasonValue.toLocaleString()}</span> ma non ha ancora ordinato per la stagione {targetSeason.replace('_', ' ')}.</p>
                                             </div>
-                                            <div className="space-y-2.5">
-                                                <h4 className="text-[11px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                    <Icons.History /> Storico Ordini
-                                                </h4>
-                                                <div className="border border-stone-200 rounded-xl shadow-sm overflow-x-auto custom-scrollbar">
-                                                    <table className="w-full text-left text-sm bg-white min-w-[500px]">
-                                                        <thead className="text-[10px] font-bold text-stone-500 uppercase bg-stone-50 border-b border-stone-200">
+                                        </div>
+                                    )}
+                                    
+                                    {selectedClient.crossSellSuggestion && !selectedClient.isChurnRisk && (
+                                        <div className="bg-indigo-50 border border-indigo-200 rounded-[2rem] p-6 flex items-start gap-5 shadow-sm">
+                                            <div className="p-4 rounded-xl bg-white shadow-sm text-indigo-500"><Icons.Sparkles className="w-8 h-8" /></div>
+                                            <div>
+                                                <p className="text-[11px] font-black text-indigo-700 uppercase tracking-[0.2em] mb-1">Opportunità Strategica Predittiva</p>
+                                                <p className="text-base text-indigo-600 font-extrabold italic leading-relaxed">"{selectedClient.crossSellSuggestion.pitch}"</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                                        <div className="xl:col-span-2 space-y-8">
+                                            <div className="space-y-4">
+                                                <h4 className="text-[12px] font-black text-stone-400 uppercase tracking-[0.2em] flex items-center gap-2 pl-2"><Icons.Notebook /> Annotazioni e Briefing</h4>
+                                                <textarea className="w-full h-48 p-6 bg-stone-50 border border-stone-200 rounded-[2rem] outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50 transition-all font-semibold text-stone-700 resize-none shadow-inner" placeholder="Es: Cliente interessato a nuovi marchi, richiamare per fissare appuntamento dopo il 15 del mese..." value={selectedClient.notes} onChange={e => setSelectedClient({...selectedClient, notes: e.target.value})} onBlur={() => saveClientData(selectedClient.name, null, selectedClient.notes)} />
+                                            </div>
+                                            <div className="space-y-4">
+                                                <h4 className="text-[12px] font-black text-stone-400 uppercase tracking-[0.2em] flex items-center gap-2 pl-2"><Icons.History /> Cronologia Acquisti</h4>
+                                                <div className="rounded-[2rem] border border-stone-200 overflow-hidden shadow-sm bg-white">
+                                                    <table className="w-full text-sm text-left">
+                                                        <thead className="bg-stone-50 text-[10px] font-black uppercase text-stone-400 border-b border-stone-200 tracking-widest">
                                                             <tr>
-                                                                <th className="p-3 pl-4">Stagione</th>
-                                                                <th className="p-3">Intestazione</th>
-                                                                <th className="p-3">Marchi</th>
-                                                                <th className="p-3 text-center">Volumi</th>
-                                                                <th className="p-3 pr-4 text-right">Fatturato</th>
+                                                                <th className="p-5 pl-6">Stagione</th>
+                                                                <th className="p-5">Ditta</th>
+                                                                <th className="p-5">Brand Acquistati</th>
+                                                                <th className="p-5 text-center">Volumi</th>
+                                                                <th className="p-5 text-right pr-6">Fatturato</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody className="divide-y divide-stone-100 font-medium text-stone-700">
-                                                            {selectedClient.history.map((h, i) => (
-                                                                <tr key={i} className="hover:bg-stone-50/50">
-                                                                    <td className="p-3 pl-4 font-bold text-indigo-600 whitespace-nowrap">{h.season.replace('_', ' ')}</td>
-                                                                    <td className="p-3 text-stone-600 truncate max-w-[120px]">{h.header}</td>
-                                                                    <td className="p-3 text-[9px] uppercase font-bold text-stone-400 max-w-[100px] truncate" title={h.brands}>{h.brands}</td>
-                                                                    <td className="p-3 text-center">{h.pairs}</td>
-                                                                    <td className="p-3 pr-4 text-right font-semibold whitespace-nowrap">€ {h.value.toLocaleString()}</td>
+                                                        <tbody className="divide-y divide-stone-100 text-stone-700 font-bold">
+                                                            {selectedClient.history.sort((a,b) => b.season.localeCompare(a.season)).map((h, i) => (
+                                                                <tr key={i} className="hover:bg-indigo-50/30 transition-colors">
+                                                                    <td className="p-5 pl-6 text-indigo-600 font-black">{h.season.replace('_', ' ')}</td>
+                                                                    <td className="p-5 text-stone-500 text-[10px] font-black uppercase">{h.header}</td>
+                                                                    <td className="p-5 text-[10px] uppercase text-stone-400 tracking-widest max-w-[150px] truncate" title={h.brands}>{h.brands}</td>
+                                                                    <td className="p-5 text-center bg-stone-50/50">{h.pairs}</td>
+                                                                    <td className="p-5 text-right pr-6 font-extrabold">€{h.value.toLocaleString()}</td>
                                                                 </tr>
                                                             ))}
                                                             {selectedClient.history.length === 0 && (
-                                                                <tr><td colSpan="5" className="p-4 text-center text-stone-400 text-xs">Nessun ordine registrato</td></tr>
+                                                                <tr><td colSpan="5" className="p-8 text-center text-stone-400 text-sm font-bold">Nessun ordine storico presente nel database.</td></tr>
                                                             )}
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="md:col-span-2 space-y-3 bg-stone-50/50 p-5 rounded-2xl border border-stone-200 h-fit shadow-inner">
-                                            <p className="text-[11px] font-black text-stone-400 uppercase text-center tracking-widest mb-3">Azione {targetSeason.replace('_', ' ')}</p>
-                                            <button onClick={() => saveClientData(selectedClient.name, 'verde')} className={`w-full p-3.5 rounded-xl font-bold text-sm flex items-center justify-between transition-all border shadow-sm ${selectedClient.lightStatus === 'verde' ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-white text-emerald-600 border-stone-200 hover:border-emerald-200 hover:bg-emerald-50'}`}>
-                                                <span>Appuntamento Fissato</span><div className={`w-3 h-3 rounded-full ${selectedClient.lightStatus === 'verde' ? 'bg-white' : 'bg-emerald-500'}`}></div>
-                                            </button>
-                                            <button onClick={() => saveClientData(selectedClient.name, 'giallo')} className={`w-full p-3.5 rounded-xl font-bold text-sm flex items-center justify-between transition-all border shadow-sm ${selectedClient.lightStatus === 'giallo' ? 'bg-amber-500 text-white border-amber-600' : 'bg-white text-amber-500 border-stone-200 hover:border-amber-200 hover:bg-amber-50'}`}>
-                                                <span>Da Richiamare</span><div className={`w-3 h-3 rounded-full ${selectedClient.lightStatus === 'giallo' ? 'bg-white' : 'bg-amber-500'}`}></div>
-                                            </button>
-                                            <button onClick={() => saveClientData(selectedClient.name, 'rosso')} className={`w-full p-3.5 rounded-xl font-bold text-sm flex items-center justify-between transition-all border shadow-sm ${selectedClient.lightStatus === 'rosso' ? 'bg-rose-500 text-white border-rose-600' : 'bg-white text-rose-500 border-stone-200 hover:border-rose-200 hover:bg-rose-50'}`}>
-                                                <span>Nessun Contatto</span><div className={`w-3 h-3 rounded-full ${selectedClient.lightStatus === 'rosso' ? 'bg-white' : 'bg-rose-500'}`}></div>
-                                            </button>
-                                            <div className="pt-4 mt-2 border-t border-stone-200">
-                                                <button onClick={() => window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Meeting '+targetSeason.replace('_', '')+': '+selectedClient.name)}&details=${encodeURIComponent('Tel: '+selectedClient.phone+'\nNote: '+selectedClient.notes)}`, '_blank')} className="w-full bg-stone-900 text-white p-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-indigo-600 transition-colors shadow-md">
-                                                    <Icons.Calendar /> Sincronizza Calendar
-                                                </button>
+                                        <div className="space-y-6">
+                                            <div className="bg-stone-50 p-6 rounded-[2.5rem] border border-stone-200 shadow-inner space-y-4">
+                                                <h4 className="text-[11px] font-black text-stone-400 uppercase tracking-widest text-center mb-4">Pannello di Controllo Operativo</h4>
+                                                <button onClick={() => saveClientData(selectedClient.name, 'verde')} className={`w-full p-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-between transition-all border shadow-sm ${selectedClient.lightStatus === 'verde' ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-white text-emerald-600 border-stone-200 hover:border-emerald-300'}`}>Fissato <div className="w-3 h-3 rounded-full bg-current shadow-inner"></div></button>
+                                                <button onClick={() => saveClientData(selectedClient.name, 'giallo')} className={`w-full p-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-between transition-all border shadow-sm ${selectedClient.lightStatus === 'giallo' ? 'bg-amber-500 text-white border-amber-600' : 'bg-white text-amber-500 border-stone-200 hover:border-amber-300'}`}>Da Richiamare <div className="w-3 h-3 rounded-full bg-current shadow-inner"></div></button>
+                                                <button onClick={() => saveClientData(selectedClient.name, 'rosso')} className={`w-full p-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-between transition-all border shadow-sm ${selectedClient.lightStatus === 'rosso' ? 'bg-rose-500 text-white border-rose-600' : 'bg-white text-rose-500 border-stone-200 hover:border-rose-300'}`}>Nessun Contatto <div className="w-3 h-3 rounded-full bg-current shadow-inner"></div></button>
+                                            </div>
+                                            <button onClick={() => window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Meeting Sales OS: '+selectedClient.name)}&details=${encodeURIComponent('Tel: '+selectedClient.phone+'\nNote: '+selectedClient.notes)}`, '_blank')} className="w-full bg-stone-900 text-white p-5 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-indigo-600 transition-all shadow-xl shadow-stone-900/20"><Icons.Calendar className="w-5 h-5" /> Pianifica in Calendar</button>
+                                            <div className="text-center pt-2">
+                                                <p className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em]">Ultimo Update: {selectedClient.lastUpdate ? new Date(selectedClient.lastUpdate).toLocaleString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Mai effettuato'}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -1126,74 +872,47 @@
                         </div>
                     )}
 
+                    {/* MODALE: GRAFICO ANALISI CRESCITA SVG */}
                     {showChart && (
-                        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[300] flex items-center justify-center p-3">
-                            <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 md:p-8 modal-fade-in border border-stone-200">
-                                <div className="flex justify-between items-center mb-6 border-b border-stone-100 pb-5">
+                        <div className="fixed inset-0 bg-stone-900/90 backdrop-blur-md z-[200] flex items-center justify-center p-4" onClick={() => setShowChart(null)}>
+                            <div className="bg-white w-full max-w-3xl rounded-[3rem] p-10 md:p-12 shadow-2xl modal-fade-in border border-stone-200 flex flex-col" onClick={e => e.stopPropagation()}>
+                                <div className="flex justify-between items-start mb-12">
                                     <div>
-                                        <h3 className="text-xl font-bold text-stone-800 tracking-tight flex items-center gap-2 mb-1">
-                                            <Icons.Chart /> Analisi Andamento
-                                        </h3>
-                                        <p className="text-sm text-stone-500 font-semibold">{showChart.name}</p>
+                                        <p className="text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-2 flex items-center gap-2"><Icons.Chart className="w-4 h-4"/> Performance Analytics</p>
+                                        <h3 className="text-4xl md:text-5xl font-black text-stone-800 tracking-tighter leading-none">{showChart.name}</h3>
                                     </div>
-                                    <button onClick={() => setShowChart(null)} className="p-2 bg-stone-50 rounded-xl shadow-sm border border-stone-200 text-stone-400 hover:text-rose-500 transition-colors">
-                                        <Icons.X />
-                                    </button>
+                                    <button onClick={() => setShowChart(null)} className="p-3 text-stone-400 hover:text-stone-800 bg-stone-50 rounded-2xl transition-colors border border-stone-200"><Icons.X /></button>
                                 </div>
                                 
-                                <div className="h-64 mt-4 flex items-end justify-around gap-2 md:gap-4 relative pb-6 pt-8 border-b border-stone-200">
+                                <div className="h-80 flex items-end justify-around gap-4 md:gap-8 border-b-2 border-stone-100 pb-4 relative mt-auto">
                                     {showChart.history.length === 0 ? (
-                                        <div className="absolute inset-0 flex items-center justify-center text-stone-400 text-sm font-medium">
-                                            Nessun dato storico per generare il grafico.
-                                        </div>
+                                        <div className="absolute inset-0 flex items-center justify-center text-stone-400 font-bold text-sm uppercase tracking-widest">Nessun dato storico per generare il grafico</div>
                                     ) : (
-                                        (() => {
-                                            const aggregatedHistory = showChart.history.reduce((acc, curr) => {
-                                                if (!acc[curr.season]) acc[curr.season] = { season: curr.season, value: 0, pairs: 0 };
-                                                acc[curr.season].value += curr.value;
-                                                acc[curr.season].pairs += curr.pairs;
-                                                return acc;
-                                            }, {});
-                                            
-                                            const seasonWeight = (s) => {
-                                                const parts = s.split('_');
-                                                if(parts.length !== 2) return 0;
-                                                const year = parseInt(parts[1], 10);
-                                                const type = parts[0].toUpperCase() === 'PE' ? 0 : 1; 
-                                                return year * 10 + type;
-                                            };
-                                            
-                                            const chartData = Object.values(aggregatedHistory).sort((a,b) => seasonWeight(a.season) - seasonWeight(b.season));
-                                            const maxVal = Math.max(...chartData.map(h => h.value), 100); 
-                                            
-                                            return chartData.map((h, i) => {
-                                                const heightPercent = Math.max((h.value / maxVal) * 100, 2); 
-                                                
-                                                return (
-                                                    <div key={i} className="flex flex-col items-center justify-end flex-1 h-full group relative">
-                                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute top-0 text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1.5 rounded-lg shadow-md z-10 pointer-events-none transform -translate-y-full -mt-2 whitespace-nowrap text-center">
-                                                            € {h.value.toLocaleString()} <br/> <span className="text-stone-500 font-semibold">{h.pairs} paia</span>
-                                                        </div>
-                                                        <div className="w-full max-w-[40px] md:max-w-[60px] bg-indigo-50 rounded-t-lg relative flex items-end justify-center group-hover:bg-indigo-100 transition-colors border border-b-0 border-indigo-100" style={{ height: `${heightPercent}%` }}>
-                                                            <div className="w-full bg-indigo-500 rounded-t-lg transition-all duration-500 ease-out absolute bottom-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.2)] group-hover:bg-indigo-600" style={{ height: '100%' }}></div>
-                                                        </div>
-                                                        <div className="text-[10px] font-bold text-stone-400 uppercase tracking-tighter mt-3 text-center w-full truncate px-1">
-                                                            {h.season.replace('_', ' ')}
-                                                        </div>
+                                        showChart.history.sort((a,b) => a.season.localeCompare(b.season)).map((h, i) => {
+                                            const maxVal = Math.max(...showChart.history.map(x => x.value), 100);
+                                            const height = Math.max((h.value / maxVal) * 100, 5); // Almeno 5% di altezza per far vedere la barra
+                                            return (
+                                                <div key={i} className="flex-1 flex flex-col items-center gap-3 h-full justify-end group">
+                                                    <div className="opacity-0 group-hover:opacity-100 transition-all bg-stone-900 text-white text-[10px] font-black px-3 py-2 rounded-xl mb-2 shadow-xl whitespace-nowrap transform translate-y-2 group-hover:translate-y-0">
+                                                        € {h.value.toLocaleString()} <br/> <span className="text-stone-400 font-bold uppercase tracking-widest text-[8px]">{h.pairs} paia</span>
                                                     </div>
-                                                );
-                                            });
-                                        })()
+                                                    <div className="w-full max-w-[80px] bg-indigo-50 rounded-t-2xl relative overflow-hidden group-hover:bg-indigo-100 transition-all cursor-crosshair shadow-inner" style={{height: `${height}%`}}>
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-indigo-600 to-indigo-400 opacity-90 group-hover:opacity-100 transition-all"></div>
+                                                    </div>
+                                                    <div className="text-[11px] font-black text-stone-400 uppercase tracking-widest pt-2">{h.season.replace('_', ' ')}</div>
+                                                </div>
+                                            );
+                                        })
                                     )}
                                 </div>
-                                <div className="mt-5 flex justify-between items-center text-[11px] font-black text-stone-400 uppercase tracking-widest">
-                                    <span>Valore Storico: <span className="text-indigo-600 text-sm">€{showChart.totalValue.toLocaleString()}</span></span>
-                                    <span>{Object.keys(showChart.history.reduce((a,c)=>({...a,[c.season]:1}),{})).length} Campagne</span>
+                                
+                                <div className="mt-10 flex flex-col md:flex-row justify-between md:items-center font-black text-[11px] text-stone-400 uppercase tracking-[0.2em] bg-stone-50 p-6 rounded-3xl border border-stone-100">
+                                    <span className="flex flex-col gap-1">Valore Storico Cumulato <span className="text-indigo-600 text-2xl font-black">€{showChart.totalValue.toLocaleString()}</span></span>
+                                    <span className="mt-4 md:mt-0 bg-white px-4 py-2 rounded-xl border border-stone-200 shadow-sm text-stone-500">Analisi su {showChart.history.length} stagioni</span>
                                 </div>
                             </div>
                         </div>
                     )}
-
                 </div>
             );
         }
